@@ -29,6 +29,10 @@ const NftSchema = new Schema({
         ref: "User",
         required: true
     },
+    listed: {
+        type: Boolean,
+        default: true
+    },
     createdAt: {
         type: Date,
         default: Date.now

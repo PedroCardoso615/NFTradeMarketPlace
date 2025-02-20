@@ -2,9 +2,11 @@ const express = require("express");
 const { signUp, login, getUsers } = require("../services/userService");
 const { validateAccessToken } = require("../services/authService");
 const { authenticateUser } = require("../middlewares/authMiddleware");
+const userModel = require("../models/UserModel");
 
 const userRouter = express.Router();
 
+{/*Sign Up*/}
 userRouter.post("/signup", async (req, res, next) => {
   const { fullname, age, email, password, profilePicture } = req.body;
 
@@ -30,6 +32,7 @@ userRouter.post("/signup", async (req, res, next) => {
   }
 });
 
+{/*Login*/}
 userRouter.post("/login", async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -57,6 +60,7 @@ userRouter.post("/login", async (req, res, next) => {
   }
 });
 
+{/*Logout*/}
 userRouter.post("/logout", (req, res, next) => {
   console.log("Clearing cookie...");
   res.clearCookie("accessToken", {
@@ -70,6 +74,7 @@ userRouter.post("/logout", (req, res, next) => {
   });
 });
 
+{/*Get User Profile*/}
 userRouter.get("/me", authenticateUser, (req, res, next) => {
   res.json({
     success: true,
@@ -77,6 +82,39 @@ userRouter.get("/me", authenticateUser, (req, res, next) => {
   });
 });
 
+userRouter.put("/update", authenticateUser, async (req, res, next) => {
+  const userId = req.user._id;
+  const { fullname, age, profilePicture } = req.body;
+
+  try {
+    const updateUser = await userModel.findByIdAndUpdate(
+      userId,
+      { fullname, age, profilePicture },
+      { new: true, runValidators: true },
+    );
+
+    if(!updateUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "User updated successfully",
+      user: updateUser,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update profile",
+    });
+  }
+});
+
+{/*Get All Users*/}
 userRouter.get(
   "",
   authenticateUser,

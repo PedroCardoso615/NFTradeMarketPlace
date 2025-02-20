@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const { authenticateUser } = require("../middlewares/authMiddleware");
 const nftModel = require("../models/NFTModel");
 const transactionModel = require("../models/TransactionModel");
@@ -19,6 +20,7 @@ nftRouter.post("/create", authenticateUser, async (req, res, next) => {
       image,
       creator: req.user._id,
       owner: req.user._id,
+      listed: true,
     });
 
     await newNFT.save();
@@ -160,12 +162,131 @@ nftRouter.get("/my-nfts", authenticateUser, async (req, res, next) => {
   }
 });
 
-{/*Buy and Transfer NFT ownership*/}
-nftRouter.post("/buy/:nftId", authenticateUser, async (req, res, next) => {
+{/*Buy and Transfer NFT ownership, Refund and Royalties*/}
+nftRouter.post("/buy/:nftId", authenticateUser, async (req, res) => {
+  const { nftId } = req.params;
+  const buyerId = req.user._id;
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    const nft = await nftModel.findById(nftId).populate("owner").session(session);
+    if (!nft || !nft.listed) {
+      throw new Error("NFT not found or not for sale");
+    }
+
+    const buyer = await userModel.findById(buyerId).session(session);
+    const seller = await userModel.findById(nft.owner).session(session);
+
+    if (!buyer || !seller) {
+      throw new Error("User not found");
+    }
+
+    if (buyer.balance < nft.price) {
+      throw new Error("Insufficient balance");
+    }
+
+    buyer.balance -= nft.price;
+
+    const creator = await userModel.findById(nft.creator).session(session);
+    const royaltyFee = creator && seller._id.toString() !== creator._id.toString() 
+      ? Math.floor(nft.price * 0.05)
+      : 0;
+
+    seller.balance += nft.price - royaltyFee;
+
+    if (royaltyFee > 0) {
+      creator.balance += royaltyFee;
+      await creator.save({ session });
+    }
+
+    nft.owner = buyer._id;
+    nft.listed = false;
+
+    await buyer.save({ session });
+    await seller.save({ session });
+    await nft.save({ session });
+
+    if (Math.random() < 1.0) {
+      throw new Error("Transaction failed due to an unexpected issue");
+    }
+
+    await transactionModel.create([{
+      nft: nft._id,
+      seller: seller._id,
+      buyer: buyer._id,
+      price: nft.price,
+      royalties: royaltyFee,
+      transactionStatus: "Completed",
+    }], { session });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    res.status(200).json({
+      success: true,
+      message: "NFT purchased successfully",
+      data: nft,
+    });
+
+  } catch (error) {
+    console.log("Transaction error:", error);
+
+    await session.abortTransaction();
+    session.endSession();
+
+    res.status(500).json({
+      success: false,
+      message: "Transaction failed, amount refunded",
+    });
+  }
+});
+
+{/*Re-sell NFT*/}
+nftRouter.put("/list/:nftId", authenticateUser, async (req, res, next) => {
   const { nftId } = req.params;
 
   try {
-    const nft = await nftModel.findById(nftId).populate("owner");
+    const nft = await nftModel.findById(nftId);
+    if (!nft) {
+      return res.status(404).json({
+        success: false,
+        message: "NFT not found",
+      });
+    }
+    
+    if(nft.owner.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to list this NFT",
+      });
+    }
+
+    nft.listed = true;
+    await nft.save();
+
+    res.status(200).json({
+      success: true,
+      message: "NFT listed successfully",
+      data: nft,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to list NFT",
+    });
+  }
+});
+
+{/*Remove NFT from Sale*/}
+nftRouter.put("/unlist/:nftId", authenticateUser, async (req, res, next) => {
+  const { nftId } = req.params;
+
+  try {
+    const nft = await nftModel.findById(nftId);
+
     if (!nft) {
       return res.status(404).json({
         success: false,
@@ -173,50 +294,26 @@ nftRouter.post("/buy/:nftId", authenticateUser, async (req, res, next) => {
       });
     }
 
-    if (nft.owner._id.toString() === req.user._id.toString()) {
-      return res.status(400).json({
+    if(nft.owner.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
         success: false,
-        message: "You already own this NFT",
+        message: "You are not authorized to unlist this NFT",
       });
     }
 
-    if (req.user.balance < nft.price) {
-      return res.status(400).json({
-        success: false,
-        message: "Insufficient balance",
-      });
-    }
-
-    const newTransaction = new transactionModel({
-      nft: nft._id,
-      seller: nft.owner._id,
-      buyer: req.user._id,
-      price: nft.price,
-    });
-
-    await newTransaction.save();
-
-    await userModel.findByIdAndUpdate(req.user._id, {
-      $inc: { balance: -nft.price },
-    });
-    await userModel.findByIdAndUpdate(nft.owner._id, {
-      $inc: { balance: nft.price },
-    });
-
-    nft.owner = req.user._id;
+    nft.listed = false;
     await nft.save();
 
     res.status(200).json({
       success: true,
-      message: "NFT bought successfully",
-      data: newTransaction,
+      message: "NFT unlisted successfully",
+      data: nft,
     });
   } catch (error) {
-    console.log("Error buying the NFT", error);
+    console.log(error);
     res.status(500).json({
       success: false,
-      message: "Error buying the NFT",
-      error: error.message,
+      message: "Failed to unlist NFT",
     });
   }
 });
@@ -278,6 +375,23 @@ nftRouter.delete("/favorite/:nftId", authenticateUser, async (req, res, next) =>
   }
 });
 
+{/*Get All NFT's*/}
+nftRouter.get("", async (req, res, next) => {
+  try {
+    const listedNfts = await nftModel.find({listed: true}).populate("owner").populate("creator");
+    res.status(200).json({
+      success: true,
+      data: listedNfts,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch NFTs",
+    });
+  }
+});
+
 {/*Transaction History*/}
 nftRouter.get(
   "/transaction-history",
@@ -312,5 +426,32 @@ nftRouter.get(
     }
   }
 );
+
+{/*Total Earnings*/}
+nftRouter.get("/earnings", authenticateUser, async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+
+    const soldNFTs = await transactionModel.find({ seller: userId });
+    const royaltyEarnings = await transactionModel.find({ royalties: { $gt: 0 } });
+    const totalSales = soldNFTs.reduce((sum, txn) => sum + (txn.price - txn.royalties), 0);
+    const totalRoyalties = royaltyEarnings.reduce((sum, txn) => {
+      return txn.seller.toString() !== txn.buyer.toString() ? sum + txn.royalties : sum;
+    }, 0);
+    
+    res.status(200).json({
+      success: true,
+      totalSales,
+      totalRoyalties,
+      totalEarnings: totalSales + totalRoyalties,
+    });
+  } catch(error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch earnings",
+    });
+  }
+});
 
 module.exports = nftRouter;

@@ -21,6 +21,15 @@ const TransactionSchema = new Schema({
     type: Number,
     required: true,
   },
+  royalties: {
+    type: Number,
+    default: 0,
+  },
+  transactionStatus: {
+    type: String,
+    enum: ["Completed", "Failed"],
+    default: "Completed",
+  },
   transactionDate: {
     type: Date,
     default: Date.now,
