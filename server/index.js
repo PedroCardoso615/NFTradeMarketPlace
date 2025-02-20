@@ -7,6 +7,7 @@ const { PORT } = process.env;
 const { createConnectionWithDb, closeConnectionWithDb } = require("./db");
 const userRouter = require("./router/userRouter");
 const nftRouter = require("./router/nftRouter");
+const notificationRouter = require("./router/notificationRouter");
 
 const app = express();
 
@@ -19,6 +20,7 @@ const configureApi = () => {
 
     app.use("/user", userRouter);
     app.use("/nft", nftRouter);
+    app.use("/notification", notificationRouter);
 }
 
 const startUpServer = async () => {

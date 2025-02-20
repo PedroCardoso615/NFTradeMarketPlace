@@ -28,6 +28,10 @@ const UserSchema = new Schema({
     type: Number,
     default: 5.00,
   },
+  favorites: [{
+    type: Schema.Types.ObjectId,
+    ref: "NFT",
+  }],
   permissions: {},
 }, { timestamps: true });
 
