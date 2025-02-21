@@ -17,6 +17,11 @@ const TransactionSchema = new Schema({
     ref: "User",
     required: true,
   },
+  creator: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   price: {
     type: Number,
     required: true,

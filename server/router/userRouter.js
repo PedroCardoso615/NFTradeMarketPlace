@@ -2,6 +2,7 @@ const express = require("express");
 const { signUp, login, getUsers } = require("../services/userService");
 const { validateAccessToken } = require("../services/authService");
 const { authenticateUser } = require("../middlewares/authMiddleware");
+const bcrypt = require("bcrypt");
 const userModel = require("../models/UserModel");
 
 const userRouter = express.Router();
@@ -55,7 +56,7 @@ userRouter.post("/login", async (req, res, next) => {
     console.error(error);
     res.status(401).json({
       success: false,
-      error: "Unauthorized",
+      error: "Email or password is incorrect",
     });
   }
 });
@@ -82,28 +83,49 @@ userRouter.get("/me", authenticateUser, (req, res, next) => {
   });
 });
 
+{/*Update User Profile*/}
 userRouter.put("/update", authenticateUser, async (req, res, next) => {
   const userId = req.user._id;
-  const { fullname, age, profilePicture } = req.body;
+  const { fullname, age, profilePicture, oldPassword, newPassword } = req.body;
 
   try {
-    const updateUser = await userModel.findByIdAndUpdate(
-      userId,
-      { fullname, age, profilePicture },
-      { new: true, runValidators: true },
-    );
-
-    if(!updateUser) {
+    const user = await userModel.findById(userId);
+    if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        error: "User not found",
       });
     }
 
+    if(fullname) {
+      user.fullname = fullname;
+    }
+    if(age) {
+      user.age = age;
+    }
+    if(profilePicture) {
+      user.profilePicture = profilePicture;
+    }
+
+    if (oldPassword && newPassword) {
+      const isMatch = await bcrypt.compare(oldPassword, user.password);
+      if (!isMatch) {
+        return res.status(400).json({
+          success: false,
+          message: "Old password is incorrect",
+        });
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+    }
+
+    await user.save();
+
     res.json({
       success: true,
-      message: "User updated successfully",
-      user: updateUser,
+      message: "Profile updated successfully",
+      user,
     });
   } catch (error) {
     console.error(error);

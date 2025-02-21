@@ -33,6 +33,10 @@ const NftSchema = new Schema({
         type: Boolean,
         default: true
     },
+    royalty: {
+        type: Number,
+        default: 5
+    },
     createdAt: {
         type: Date,
         default: Date.now

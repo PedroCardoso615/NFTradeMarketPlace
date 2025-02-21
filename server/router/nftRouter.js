@@ -10,7 +10,7 @@ const nftRouter = express.Router();
 
 {/*Create NFT*/}
 nftRouter.post("/create", authenticateUser, async (req, res, next) => {
-  const { NFTName, description, price, image } = req.body;
+  const { NFTName, description, price, image, royalty } = req.body;
 
   try {
     const newNFT = new nftModel({
@@ -21,6 +21,7 @@ nftRouter.post("/create", authenticateUser, async (req, res, next) => {
       creator: req.user._id,
       owner: req.user._id,
       listed: true,
+      royalty: royalty || 5,
     });
 
     await newNFT.save();
@@ -171,15 +172,16 @@ nftRouter.post("/buy/:nftId", authenticateUser, async (req, res) => {
   try {
     session.startTransaction();
 
-    const nft = await nftModel.findById(nftId).populate("owner").session(session);
+    const nft = await nftModel.findById(nftId).populate("owner creator").session(session);
     if (!nft || !nft.listed) {
       throw new Error("NFT not found or not for sale");
     }
 
     const buyer = await userModel.findById(buyerId).session(session);
     const seller = await userModel.findById(nft.owner).session(session);
+    const creator = nft.creator;
 
-    if (!buyer || !seller) {
+    if (!buyer || !seller || !creator) {
       throw new Error("User not found");
     }
 
@@ -187,17 +189,21 @@ nftRouter.post("/buy/:nftId", authenticateUser, async (req, res) => {
       throw new Error("Insufficient balance");
     }
 
-    buyer.balance -= nft.price;
-
-    const creator = await userModel.findById(nft.creator).session(session);
-    const royaltyFee = creator && seller._id.toString() !== creator._id.toString() 
-      ? Math.floor(nft.price * 0.05)
+    const royaltyPercentage = Number(nft.royalty) || 5;
+    let royaltyFee = seller._id.toString() !== creator._id.toString()
+      ? Math.max(nft.price * (royaltyPercentage / 100), 0.01)
       : 0;
 
+    royaltyFee = parseFloat(royaltyFee.toFixed(2));
+
+    console.log(`Royalty Fee: ${royaltyFee} | Seller: ${seller.fullname} | Creator: ${creator.fullname}`);
+
+    buyer.balance -= nft.price;
     seller.balance += nft.price - royaltyFee;
 
     if (royaltyFee > 0) {
       creator.balance += royaltyFee;
+      console.log(`Paying royalties of ${royaltyFee} to ${creator.fullname}`);
       await creator.save({ session });
     }
 
@@ -208,14 +214,11 @@ nftRouter.post("/buy/:nftId", authenticateUser, async (req, res) => {
     await seller.save({ session });
     await nft.save({ session });
 
-    if (Math.random() < 1.0) {
-      throw new Error("Transaction failed due to an unexpected issue");
-    }
-
     await transactionModel.create([{
       nft: nft._id,
       seller: seller._id,
       buyer: buyer._id,
+      creator: creator._id,
       price: nft.price,
       royalties: royaltyFee,
       transactionStatus: "Completed",
@@ -431,21 +434,25 @@ nftRouter.get(
 nftRouter.get("/earnings", authenticateUser, async (req, res, next) => {
   try {
     const userId = req.user._id;
-
     const soldNFTs = await transactionModel.find({ seller: userId });
-    const royaltyEarnings = await transactionModel.find({ royalties: { $gt: 0 } });
+
+    const royaltyEarnings = await transactionModel.find({ 
+      creator: userId,
+      royalties: { $gt: 0 } 
+    });
+
     const totalSales = soldNFTs.reduce((sum, txn) => sum + (txn.price - txn.royalties), 0);
-    const totalRoyalties = royaltyEarnings.reduce((sum, txn) => {
-      return txn.seller.toString() !== txn.buyer.toString() ? sum + txn.royalties : sum;
-    }, 0);
-    
+
+    const totalRoyalties = royaltyEarnings.reduce((sum, txn) => sum + txn.royalties, 0);
+
     res.status(200).json({
       success: true,
       totalSales,
       totalRoyalties,
       totalEarnings: totalSales + totalRoyalties,
     });
-  } catch(error) {
+
+  } catch (error) {
     console.log(error);
     res.status(500).json({
       success: false,
