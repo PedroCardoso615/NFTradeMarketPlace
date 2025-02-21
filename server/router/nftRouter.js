@@ -345,11 +345,30 @@ nftRouter.post("/favorite/:nftId", authenticateUser, async (req, res, next) => {
     user.favorites.push(nftId);
     await user.save();
 
+    if (!nft.owner) {
+      return res.status(500).json({
+        success: false,
+        message: "NFT owner information is missing",
+      });
+    }
+
+    if (nft.owner.toString() !== req.user._id.toString()) {
+      try {
+        await notificationModel.create({
+          user: nft.owner,
+          message: `${req.user.fullname || "Someone"} added your NFT "${nft.NFTName}" to favorites.`,
+        });
+      } catch (notifError) {
+        console.error("Failed to create notification:", notifError);
+      }
+    }
+
     res.json({
       success: true,
       message: "NFT added to favorites",
     });
   } catch (error) {
+    console.error("Error in adding NFT to favorites:", error);
     res.status(500).json({
       success: false,
       message: "Failed to add NFT to favorites",
