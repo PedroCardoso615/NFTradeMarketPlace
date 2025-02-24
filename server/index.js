@@ -8,6 +8,7 @@ const { createConnectionWithDb, closeConnectionWithDb } = require("./db");
 const userRouter = require("./router/userRouter");
 const nftRouter = require("./router/nftRouter");
 const notificationRouter = require("./router/notificationRouter");
+const checkDailyRewards = require("./utils/dailyRewardCheck");
 
 const app = express();
 
@@ -28,6 +29,8 @@ const startUpServer = async () => {
 
     configureApi();
     await createConnectionWithDb();
+
+    checkDailyRewards();
 
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
