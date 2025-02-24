@@ -7,6 +7,7 @@ const { PORT } = process.env;
 const { createConnectionWithDb, closeConnectionWithDb } = require("./db");
 const userRouter = require("./router/userRouter");
 const nftRouter = require("./router/nftRouter");
+const creatorsRouter = require("./router/topCreatorsRouter");
 const notificationRouter = require("./router/notificationRouter");
 const checkDailyRewards = require("./utils/dailyRewardCheck");
 
@@ -21,6 +22,7 @@ const configureApi = () => {
 
     app.use("/user", userRouter);
     app.use("/nft", nftRouter);
+    app.use("/top-creators", creatorsRouter);
     app.use("/notification", notificationRouter);
 }
 

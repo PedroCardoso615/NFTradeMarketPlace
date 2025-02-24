@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const { authenticateUser } = require("../middlewares/authMiddleware");
-const nftModel = require("../models/NFTModel");
+const nftModel = require("../models/NftModel");
 const transactionModel = require("../models/TransactionModel");
 const userModel = require("../models/UserModel");
 const notificationModel = require("../models/NotificationModel");
