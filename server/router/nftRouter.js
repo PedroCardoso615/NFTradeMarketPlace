@@ -322,6 +322,20 @@ nftRouter.put("/unlist/:nftId", authenticateUser, async (req, res, next) => {
     nft.listed = false;
     await nft.save();
 
+    await userModel.updateMany(
+      { favorites: nftId },
+      { $pull: { favorites: nftId } }
+    );
+
+    if (nft.likedBy.length > 0) {
+      const notifications = nft.likedBy.map((userId) => ({
+        user: userId,
+        message: `The NFT ${nft.NFTName} is no longer for sale.`,
+      }));
+
+      await notificationModel.insertMany(notifications);
+    }
+
     res.status(200).json({
       success: true,
       message: "NFT unlisted successfully",
@@ -360,6 +374,11 @@ nftRouter.post("/favorite/:nftId", authenticateUser, async (req, res, next) => {
     user.favorites.push(nftId);
     await user.save();
 
+    if (!nft.likedBy.includes(req.user._id)) {
+      nft.likedBy.push(req.user._id);
+      await nft.save();
+    }
+
     if (!nft.owner) {
       return res.status(500).json({
         success: false,
@@ -397,13 +416,25 @@ nftRouter.delete("/favorite/:nftId", authenticateUser, async (req, res, next) =>
 
   try {
     const user = await userModel.findById(req.user._id);
+    const nft = await nftModel.findById(nftId);
+
+    if (!nft) {
+      return res.status(404).json({
+        success: false,
+        message: "NFT not found",
+      });
+    }
+
     user.favorites = user.favorites.filter((id) => id.toString() !== nftId);
     await user.save();
+
+    nft.likedBy = nft.likedBy.filter((id) => id.toString() !== req.user._id.toString());
+    await nft.save();
 
     res.json({
       success: true,
       message: "NFT removed from favorites",
-    })
+    });
   } catch (error) {
     res.status(500).json({
       success: false,

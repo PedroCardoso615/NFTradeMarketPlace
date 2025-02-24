@@ -29,6 +29,10 @@ const NftSchema = new Schema({
         ref: "User",
         required: true
     },
+    likedBy: {
+        type: [Schema.Types.ObjectId],
+        ref: "User"
+    },
     listed: {
         type: Boolean,
         default: true
