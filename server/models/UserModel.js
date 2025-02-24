@@ -32,6 +32,10 @@ const UserSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "NFT",
   }],
+  lastClaimedReward: {
+    type: Date,
+    default: null
+  },
   permissions: {},
 }, { timestamps: true });
 

@@ -136,6 +136,52 @@ userRouter.put("/update", authenticateUser, async (req, res, next) => {
   }
 });
 
+{/*Get Daily Rewards*/}
+userRouter.post("/daily-reward", authenticateUser, async (req, res, next) => {
+  const reward_amount = 0.25;
+  const reward_interval_hrs = 12;
+
+  try {
+    const user = await userModel.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: "User not found",
+      });
+    }
+
+    const now = new Date();
+    if (user.lastClaimedReward) {
+      const diff = (now - user.lastClaimedReward) / (1000 * 60 * 60);
+      if (diff < reward_interval_hrs) {
+        return res.status(400).json({
+          success: false,
+          message: `You can claim your next reward in ${Math.ceil(
+            reward_interval_hrs - diff
+          )} hours.`,
+        });
+      }
+    }
+
+    user.balance += reward_amount;
+    user.lastClaimedReward = now;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: `You have claimed ${reward_amount} NFTokens.`,
+      balance: user.balance,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to claim daily reward",
+    });
+  }
+})
+
 {/*Get All Users*/}
 userRouter.get(
   "",
