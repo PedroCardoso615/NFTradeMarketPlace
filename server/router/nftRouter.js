@@ -54,17 +54,22 @@ nftRouter.put("/update/:nftId", authenticateUser, async (req, res, next) => {
       });
     }
 
-    if (nft.creator.toString() !== req.user._id.toString()) {
+    const isCreator = nft.creator.toString() === req.user._id.toString();
+    const isOwner = nft.owner.toString() === req.user._id.toString();
+
+    if (isCreator && isOwner) {
+      nft.NFTName = NFTName || nft.NFTName;
+      nft.description = description || nft.description;
+      nft.price = price || nft.price;
+      nft.image = image || nft.image;
+    } else if (!isCreator && isOwner) {
+      nft.price = price || nft.price;
+    } else {
       return res.status(403).json({
         success: false,
         message: "You are not authorized to update this NFT",
       });
     }
-
-    nft.NFTName = NFTName || nft.NFTName;
-    nft.description = description || nft.description;
-    nft.price = price || nft.price;
-    nft.image = image || nft.image;
 
     await nft.save();
 
@@ -205,7 +210,17 @@ nftRouter.post("/buy/:nftId", authenticateUser, async (req, res) => {
       creator.balance += royaltyFee;
       console.log(`Paying royalties of ${royaltyFee} to ${creator.fullname}`);
       await creator.save({ session });
+
+      await notificationModel.create({
+        user: creator._id,
+        message: `You received ${royaltyFee} NFTokens in royalties from the resale of ${nft.NFTName}.`,
+      });
     }
+
+    await notificationModel.create({
+      user: seller._id,
+      message: `Your NFT ${nft.NFTName} was purchased by ${buyer.fullname} for ${nft.price} NFTokens.`,
+    });
 
     nft.owner = buyer._id;
     nft.listed = false;
@@ -356,7 +371,7 @@ nftRouter.post("/favorite/:nftId", authenticateUser, async (req, res, next) => {
       try {
         await notificationModel.create({
           user: nft.owner,
-          message: `${req.user.fullname || "Someone"} added your NFT "${nft.NFTName}" to favorites.`,
+          message: `${req.user.fullname || "Someone"} added your NFT ${nft.NFTName} to favorites.`,
         });
       } catch (notifError) {
         console.error("Failed to create notification:", notifError);
