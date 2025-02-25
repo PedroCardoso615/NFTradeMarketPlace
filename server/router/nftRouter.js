@@ -14,6 +14,13 @@ nftRouter.post("/create", authenticateUser, async (req, res, next) => {
   let { NFTName, description, price, image, royalty } = req.body; //Needs to be 'let' instead of 'const' to allow the reassignment of 'royalty'(Line 16).
 
   try {
+    if (!image || typeof image !== "string" || !/\.(jpg|jpeg|png)$/i.test(image)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid image format. Must be an image file (.jpg, .jpeg, .png).",
+      });
+    }
+
     royalty = Number(royalty);
     if (isNaN(royalty) || royalty < 0 || royalty > 20) {
       return res.status(400).json({
@@ -65,6 +72,13 @@ nftRouter.put("/update/:nftId", authenticateUser, async (req, res, next) => {
 
     const isCreator = nft.creator.toString() === req.user._id.toString();
     const isOwner = nft.owner.toString() === req.user._id.toString();
+
+    if (!image || typeof image !== "string" || !/\.(jpg|jpeg|png)$/i.test(image)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid image format. Must be an image file (.jpg, .jpeg, .png).",
+      });
+    }
 
     if (isCreator && isOwner) {
       nft.NFTName = NFTName || nft.NFTName;
