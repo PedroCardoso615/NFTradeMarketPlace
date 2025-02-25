@@ -200,7 +200,13 @@ nftRouter.post("/buy/:nftId", authenticateUser, async (req, res) => {
   try {
     session.startTransaction();
 
-    const nft = await nftModel.findById(nftId).populate("owner creator").session(session);
+    const nft = await nftModel.findById(nftId)
+    .populate("owner")
+    .populate({
+      path: "creator",
+      select: "fullname profilePicture"
+    })
+    .session(session);
     if (!nft || !nft.listed) {
       throw new Error("NFT not found or not for sale");
     }
@@ -501,8 +507,14 @@ nftRouter.get("", async (req, res, next) => {
 
     const listedNfts = await nftModel
       .find(filter)
-      .populate("owner")
-      .populate("creator")
+      .populate({
+        path: "owner",
+        select: "fullname profilePicture"
+      })
+      .populate({
+        path: "creator",
+        select: "fullname profilePicture"
+      })
       .sort(sortOptions);
 
     res.status(200).json({
@@ -590,8 +602,14 @@ nftRouter.get(
           $or: [{ buyer: req.user._id }, { seller: req.user._id }],
         })
         .populate("nft")
-        .populate("buyer")
-        .populate("seller");
+        .populate({
+          path: "buyer",
+          select: "fullname profilePicture"
+        })
+        .populate({
+          path: "seller",
+          select: "fullname profilePicture"
+        });
 
       if (transactions.length === 0) {
         return res.status(404).json({

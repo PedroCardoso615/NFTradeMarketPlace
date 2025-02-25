@@ -12,6 +12,18 @@ userRouter.post("/signup", async (req, res, next) => {
   const { fullname, age, email, password, profilePicture } = req.body;
 
   try {
+    if (
+      !profilePicture ||
+      typeof profilePicture !== "string" ||
+      !/\.(jpg|jpeg|png)$/i.test(profilePicture)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Invalid image format. Must be an image file (.jpg, .jpeg, .png).",
+      });
+    }
+
     const user = await signUp({
       fullname,
       age,
@@ -97,13 +109,24 @@ userRouter.put("/update", authenticateUser, async (req, res, next) => {
       });
     }
 
-    if(fullname) {
+    if (fullname) {
       user.fullname = fullname;
     }
-    if(age) {
+    if (age) {
       user.age = age;
     }
-    if(profilePicture) {
+    if (profilePicture) {
+      if (
+        !profilePicture ||
+        typeof profilePicture !== "string" ||
+        !/\.(jpg|jpeg|png)$/i.test(profilePicture)
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Invalid image format. Must be an image file (.jpg, .jpeg, .png).",
+        });
+      }
       user.profilePicture = profilePicture;
     }
 
@@ -180,7 +203,7 @@ userRouter.post("/daily-reward", authenticateUser, async (req, res, next) => {
       message: "Failed to claim daily reward",
     });
   }
-})
+});
 
 {/*Get All Users*/}
 userRouter.get(
