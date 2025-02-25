@@ -461,15 +461,11 @@ nftRouter.get("", async (req, res, next) => {
     if (minPrice) filter.price = { ...filter.price, $gte: Number(minPrice) };
     if (maxPrice) filter.price = { ...filter.price, $lte: Number(maxPrice) };
 
-    if (minRoyalty) { 
-      const minRoyal = Math.max(0, Number(minRoyalty))
-      filter.royalty = { ...filter.royalty, $gte: minRoyal }
-    };
-
-    if (minRoyalty) { 
-      const maxRoyal = Math.max(20, Number(maxRoyalty))
-      filter.royalty = { ...filter.royalty, $gte: maxRoyal }
-    };
+    if (minRoyalty || maxRoyalty) {
+      filter.royalty = {};
+      if (minRoyalty) filter.royalty.$gte = Math.max(0, Number(minRoyalty));
+      if (maxRoyalty) filter.royalty.$lte = Math.min(20, Number(maxRoyalty));
+    }
 
     let sortOptions = {};
     switch (sort) {
