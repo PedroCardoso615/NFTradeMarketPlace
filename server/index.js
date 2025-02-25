@@ -8,6 +8,7 @@ const { createConnectionWithDb, closeConnectionWithDb } = require("./db");
 const userRouter = require("./router/userRouter");
 const nftRouter = require("./router/nftRouter");
 const creatorsRouter = require("./router/topCreatorsRouter");
+const trendnftRouter = require("./router/topNFTsRouter");
 const notificationRouter = require("./router/notificationRouter");
 const checkDailyRewards = require("./utils/dailyRewardCheck");
 
@@ -23,6 +24,7 @@ const configureApi = () => {
     app.use("/user", userRouter);
     app.use("/nft", nftRouter);
     app.use("/top-creators", creatorsRouter);
+    app.use("/trending-nfts", trendnftRouter);
     app.use("/notification", notificationRouter);
 }
 

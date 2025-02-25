@@ -10,9 +10,17 @@ const nftRouter = express.Router();
 
 {/*Create NFT*/}
 nftRouter.post("/create", authenticateUser, async (req, res, next) => {
-  const { NFTName, description, price, image, royalty } = req.body;
+  let { NFTName, description, price, image, royalty } = req.body; //Needs to be 'let' instead of 'const' to allow the reassignment of 'royalty'(Line 16).
 
   try {
+    royalty = Number(royalty);
+    if (isNaN(royalty) || royalty < 0 || royalty > 20) {
+      return res.status(400).json({
+        success: false,
+        message: "Royalty must be between 0% and 20%",
+      });
+    }
+
     const newNFT = new nftModel({
       NFTName,
       description,
