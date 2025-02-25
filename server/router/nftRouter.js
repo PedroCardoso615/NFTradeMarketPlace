@@ -455,11 +455,21 @@ nftRouter.delete("/favorite/:nftId", authenticateUser, async (req, res, next) =>
 {/*Get All Listed NFT's*/}
 nftRouter.get("", async (req, res, next) => {
   try {
-    let { minPrice, maxPrice, sort } = req.query;
+    let { minPrice, maxPrice, minRoyalty, maxRoyalty, sort } = req.query;
     let filter = { listed: true };
 
     if (minPrice) filter.price = { ...filter.price, $gte: Number(minPrice) };
     if (maxPrice) filter.price = { ...filter.price, $lte: Number(maxPrice) };
+
+    if (minRoyalty) { 
+      const minRoyal = Math.max(0, Number(minRoyalty))
+      filter.royalty = { ...filter.royalty, $gte: minRoyal }
+    };
+
+    if (minRoyalty) { 
+      const maxRoyal = Math.max(20, Number(maxRoyalty))
+      filter.royalty = { ...filter.royalty, $gte: maxRoyal }
+    };
 
     let sortOptions = {};
     switch (sort) {
@@ -471,6 +481,8 @@ nftRouter.get("", async (req, res, next) => {
       case "date_desc": sortOptions.createdAt = -1; break;
       case "name_asc": sortOptions.NFTName = 1; break;
       case "name_desc": sortOptions.NFTName = -1; break;
+      case "royalty_asc": sortOptions.royalty = 1; break;
+      case "royalty_desc": sortOptions.royalty = -1; break;
     }
 
     const listedNfts = await nftModel
