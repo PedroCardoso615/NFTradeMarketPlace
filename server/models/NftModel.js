@@ -31,7 +31,8 @@ const NftSchema = new Schema({
     },
     likedBy: {
         type: [Schema.Types.ObjectId],
-        ref: "User"
+        ref: "User",
+        default: []
     },
     listed: {
         type: Boolean,
@@ -39,7 +40,6 @@ const NftSchema = new Schema({
     },
     royalty: {
         type: Number,
-        default: 5,
         min: 0,
         max: 20
     },

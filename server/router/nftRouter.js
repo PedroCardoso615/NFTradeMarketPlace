@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const { authenticateUser } = require("../middlewares/authMiddleware");
+const { validateAccessToken } = require("../services/authService")
 const nftModel = require("../models/NftModel");
 const transactionModel = require("../models/TransactionModel");
 const userModel = require("../models/UserModel");
@@ -451,14 +452,38 @@ nftRouter.delete("/favorite/:nftId", authenticateUser, async (req, res, next) =>
   }
 });
 
-{/*Get All NFT's*/}
+{/*Get All Listed NFT's*/}
 nftRouter.get("", async (req, res, next) => {
   try {
-    const listedNfts = await nftModel.find({listed: true}).populate("owner").populate("creator");
+    let { minPrice, maxPrice, sort } = req.query;
+    let filter = { listed: true };
+
+    if (minPrice) filter.price = { ...filter.price, $gte: Number(minPrice) };
+    if (maxPrice) filter.price = { ...filter.price, $lte: Number(maxPrice) };
+
+    let sortOptions = {};
+    switch (sort) {
+      case "price_asc": sortOptions.price = 1; break;
+      case "price_desc": sortOptions.price = -1; break;
+      case "likes_asc": sortOptions.likedBy = 1; break;
+      case "likes_desc": sortOptions.likedBy = -1; break;
+      case "date_asc": sortOptions.createdAt = 1; break;
+      case "date_desc": sortOptions.createdAt = -1; break;
+      case "name_asc": sortOptions.NFTName = 1; break;
+      case "name_desc": sortOptions.NFTName = -1; break;
+    }
+
+    const listedNfts = await nftModel
+      .find(filter)
+      .populate("owner")
+      .populate("creator")
+      .sort(sortOptions);
+
     res.status(200).json({
       success: true,
       data: listedNfts,
     });
+
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -467,6 +492,66 @@ nftRouter.get("", async (req, res, next) => {
     });
   }
 });
+
+{/*Get All NFT's*/}
+nftRouter.get(
+  "/admin",
+  authenticateUser,
+  async (req, res, next) => {
+    console.log("req.headers", req.headers);
+    const { authorization } = req.headers;
+
+    if (!authorization || "" === authorization) {
+      return res.status(401).send({
+        success: false,
+        error: "Unauthorized",
+      });
+    }
+
+    req.authorization = authorization;
+    next();
+  },
+  (req, res, next) => {
+    const { authorization } = req;
+    const [_, accessToken] = authorization.split("Bearer ");
+    console.log("accessToken", accessToken);
+
+    req.accessToken = accessToken;
+
+    try {
+      const payload = validateAccessToken(accessToken);
+      console.log("payload", payload);
+
+      req.userId = payload.userId;
+      req.email = payload.email;
+      req.permissions = payload.permissions;
+
+      next();
+    } catch (error) {
+      console.error(error);
+      return res.status(401).send({
+        success: false,
+        error: "Unauthorized",
+      });
+    }
+  },
+  async (req, res, next) => {
+    try {
+      const nfts = await nftModel.find().populate("owner").populate("creator");
+
+      return res.send({
+        success: true,
+        data: nfts,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({
+        success: false,
+        error: "Failed to fetch NFTs",
+      });
+    }
+  }
+);
 
 {/*Transaction History*/}
 nftRouter.get(

@@ -231,13 +231,13 @@ userRouter.get(
 
       return res.send({
         success: true,
-        users,
+        data: users,
       });
     } catch (error) {
       console.error(error);
       res.status(500).send({
         success: false,
-        error,
+        error: "Failed to fetch users",
       });
     }
   }
