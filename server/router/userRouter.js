@@ -251,6 +251,61 @@ userRouter.post("/reset-password/:token", async (req, res) => {
   }
 });
 
+{/*Contact Form for Bug Reports or Requests*/}
+userRouter.post("/contact", authenticateUser, async (req, res) => {
+  try {
+    const { subject, message } = req.body;
+    const user = req.user;
+
+    if (!subject || !message) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Subject and message are required." });
+    }
+
+    const validSubjects = [
+      "Bug Report",
+      "Feature Recommendation",
+      "General Inquiry",
+      "Account Issue",
+      "Become a Partner"
+    ];
+    if (!validSubjects.includes(subject)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid subject.",
+      });
+    }
+
+    const emailContent = `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h3 style="color: #007bff;">New Contact Request</h3>
+        <p><strong>From:</strong> ${user.fullname} (${user.email})</p>
+        <p><strong>Subject:</strong> ${subject}</p>
+        <p><strong>Message:</strong></p>
+        <p style="border-left: 4px solid #007bff; padding-left: 10px; color: #555;">${message}</p>
+      </div>
+    `;
+
+    await sendEmail(
+      process.env.GMAIL_USER,
+      `New NFTrade Contact Request: ${subject}`,
+      emailContent
+    );
+
+    res.json({
+      success: true,
+      message: "Message sent successfully!",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to send message.",
+    });
+  }
+});
+
 {/*Get Daily Rewards*/}
 userRouter.post("/daily-reward", authenticateUser, async (req, res, next) => {
   const reward_amount = 0.25;

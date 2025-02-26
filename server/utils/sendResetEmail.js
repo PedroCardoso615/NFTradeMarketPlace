@@ -12,7 +12,7 @@ const sendEmail = async (to, subject, htmlContent) => {
     });
 
     const mailOptions = {
-      from: `"NFTrade" <${process.env.EMAIL_USER}`,
+      from: `"NFTrade" ${process.env.GMAIL_USER}`,
       to,
       subject,
       html: htmlContent,
