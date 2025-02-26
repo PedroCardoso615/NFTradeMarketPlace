@@ -5,6 +5,7 @@ const UserSchema = new Schema({
   fullname: {
     type: String,
     required: true,
+    max: 25
   },
   age: {
     type: Number,
@@ -37,6 +38,14 @@ const UserSchema = new Schema({
     default: null
   },
   permissions: {},
+  resetPPasswordToken: {
+    type: String,
+    default: null
+  },
+  resetPasswordExpires: {
+    type: Date,
+    default: null
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model("User", UserSchema, "Users");

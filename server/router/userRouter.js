@@ -3,7 +3,9 @@ const { signUp, login, getUsers } = require("../services/userService");
 const { validateAccessToken } = require("../services/authService");
 const { authenticateUser } = require("../middlewares/authMiddleware");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const userModel = require("../models/UserModel");
+const sendEmail = require("../utils/sendResetEmail");
 
 const userRouter = express.Router();
 
@@ -155,6 +157,96 @@ userRouter.put("/update", authenticateUser, async (req, res, next) => {
     res.status(500).json({
       success: false,
       message: "Failed to update profile",
+    });
+  }
+});
+
+{/*Send Pasword Reset Via Email*/}
+userRouter.post("/forgot-password", async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    user.resetPasswordToken = hashedToken;
+    user.resetPasswordExpires = Date.now() + 10 * 60 * 1000;
+
+    await user.save();
+
+    const resetURL = `http://localhost:3000/reset-password/${resetToken}`;
+
+    const emailContent = `
+    <div style="font-family: Arial, sans-serif; padding: 20px; text-align: center; background-color: #f4f4f4;">
+      <div style="max-width: 500px; background: white; padding: 20px; margin: auto; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1);">
+        <h2 style="color: #333;">Reset Your Password</h2>
+          <p style="color: #555;">You requested a password reset. Click the "Reset Password" button below to set a new one.</p>
+            <a href="${resetURL}" style="display: inline-block; padding: 12px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">Reset Password</a>
+          <p style="margin-top: 20px; color: #888;">If you did not request this, please ignore this email.</p>
+        </div>
+      </div>
+    `;
+
+    await sendEmail(user.email, "Password Reset", emailContent);
+
+    res.json({
+      success: true,
+      message: "Password reset email sent",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error sending password reset email",
+    });
+  }
+});
+
+{/*Change Password Through Email*/}
+userRouter.post("/reset-password/:token", async (req, res) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+
+  try {
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    const user = await userModel.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired token",
+      });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
+
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Password reset successful",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to reset password",
     });
   }
 });
