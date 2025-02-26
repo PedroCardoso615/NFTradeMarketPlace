@@ -22,7 +22,7 @@ userRouter.post("/signup", async (req, res, next) => {
       return res.status(400).json({
         success: false,
         message:
-          "Invalid image format. Must be an image file (.jpg, .jpeg, .png).",
+          "Invalid image format. Must be an image file (.jpg, .jpeg or .png).",
       });
     }
 
@@ -42,7 +42,7 @@ userRouter.post("/signup", async (req, res, next) => {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: error,
+      message: "Failed to create user",
     });
   }
 });
@@ -126,7 +126,7 @@ userRouter.put("/update", authenticateUser, async (req, res, next) => {
         return res.status(400).json({
           success: false,
           message:
-            "Invalid image format. Must be an image file (.jpg, .jpeg, .png).",
+            "Invalid image format. Must be an image file (.jpg, .jpeg or .png).",
         });
       }
       user.profilePicture = profilePicture;

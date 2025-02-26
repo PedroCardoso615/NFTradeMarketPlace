@@ -17,7 +17,7 @@ nftRouter.post("/create", authenticateUser, async (req, res, next) => {
     if (!image || typeof image !== "string" || !/\.(jpg|jpeg|png)$/i.test(image)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid image format. Must be an image file (.jpg, .jpeg, .png).",
+        message: "Invalid image format. Must be an image file (.jpg, .jpeg or .png).",
       });
     }
 
@@ -25,7 +25,7 @@ nftRouter.post("/create", authenticateUser, async (req, res, next) => {
     if (isNaN(royalty) || royalty < 0 || royalty > 20) {
       return res.status(400).json({
         success: false,
-        message: "Royalty must be between 0% and 20%",
+        message: "NFT Royalty must be between 0% and 20%",
       });
     }
 
@@ -47,7 +47,7 @@ nftRouter.post("/create", authenticateUser, async (req, res, next) => {
       data: newNFT,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Failded to create NFT",
@@ -76,7 +76,7 @@ nftRouter.put("/update/:nftId", authenticateUser, async (req, res, next) => {
     if (!image || typeof image !== "string" || !/\.(jpg|jpeg|png)$/i.test(image)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid image format. Must be an image file (.jpg, .jpeg, .png).",
+        message: "Invalid image format. Must be an image file (.jpg, .jpeg or .png).",
       });
     }
 
@@ -115,7 +115,7 @@ nftRouter.put("/update/:nftId", authenticateUser, async (req, res, next) => {
       data: nft,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Failed to update NFT",
@@ -147,7 +147,7 @@ nftRouter.delete("/delete/:nftId", authenticateUser, async (req, res, next) => {
     if (nft.owner.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         success: false,
-        message: "Cannot delete this NFT as it has been sold",
+        message: "Cannot delete this NFT as you're not the owner",
       });
     }
 
@@ -158,7 +158,7 @@ nftRouter.delete("/delete/:nftId", authenticateUser, async (req, res, next) => {
       message: "NFT deleted successfully",
     });
   } catch(error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Failed to delete NFT",
@@ -183,7 +183,7 @@ nftRouter.get("/my-nfts", authenticateUser, async (req, res, next) => {
       data: userNfts,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).json({
       success: false,
       message: "Failed to fetch NFTs",
@@ -278,7 +278,7 @@ nftRouter.post("/buy/:nftId", authenticateUser, async (req, res) => {
     });
 
   } catch (error) {
-    console.log("Transaction error:", error);
+    console.error(error);
 
     await session.abortTransaction();
     session.endSession();
@@ -319,7 +319,7 @@ nftRouter.put("/list/:nftId", authenticateUser, async (req, res, next) => {
       data: nft,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Failed to list NFT",
@@ -371,7 +371,7 @@ nftRouter.put("/unlist/:nftId", authenticateUser, async (req, res, next) => {
       data: nft,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Failed to unlist NFT",
@@ -421,8 +421,8 @@ nftRouter.post("/favorite/:nftId", authenticateUser, async (req, res, next) => {
           user: nft.owner,
           message: `${req.user.fullname || "Someone"} added your NFT ${nft.NFTName} to favorites.`,
         });
-      } catch (notifError) {
-        console.error("Failed to create notification:", notifError);
+      } catch (error) {
+        console.error(error);
       }
     }
 
@@ -431,7 +431,7 @@ nftRouter.post("/favorite/:nftId", authenticateUser, async (req, res, next) => {
       message: "NFT added to favorites",
     });
   } catch (error) {
-    console.error("Error in adding NFT to favorites:", error);
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Failed to add NFT to favorites",
@@ -465,6 +465,7 @@ nftRouter.delete("/favorite/:nftId", authenticateUser, async (req, res, next) =>
       message: "NFT removed from favorites",
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Failed to remove NFT from favorites",
@@ -523,7 +524,7 @@ nftRouter.get("", async (req, res, next) => {
     });
 
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch NFTs",
@@ -623,7 +624,7 @@ nftRouter.get(
         data: transactions,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(500).json({
         success: false,
         message: "Failed to fetch transactions",
@@ -655,7 +656,7 @@ nftRouter.get("/earnings", authenticateUser, async (req, res, next) => {
     });
 
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch earnings",

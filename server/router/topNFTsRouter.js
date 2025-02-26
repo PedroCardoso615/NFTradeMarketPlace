@@ -14,7 +14,10 @@ trendnftRouter.get('/', async (req, res) => {
         res.json(topNFTs);
     } catch (error) {
         console.error(error);
-        res.status(500).json("Internal server error");
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch Trending NFTs"
+        });
     }
 });
 

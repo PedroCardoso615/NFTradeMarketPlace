@@ -16,7 +16,7 @@ notificationRouter.get("/", authenticateUser, async (req, res, next) => {
             data: notifications,
         });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({
             success: false,
             message: "Failed to fetch notifications",
@@ -37,7 +37,7 @@ notificationRouter.put("/read", authenticateUser, async (req, res, next) => {
             message: "All notifications marked as read",
         });
     } catch(error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({
             success: false,
             message: "Failed to mark notifications as read",
@@ -67,7 +67,7 @@ notificationRouter.put("/read/:id", authenticateUser, async (req, res, next) => 
             data: notification,
         });
     } catch(error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({
             success: false,
             message: "Failed to mark notification as read",
