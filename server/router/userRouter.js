@@ -14,18 +14,6 @@ userRouter.post("/signup", async (req, res, next) => {
   const { fullname, age, email, password, profilePicture } = req.body;
 
   try {
-    if (
-      !profilePicture ||
-      typeof profilePicture !== "string" ||
-      !/\.(jpg|jpeg|png)$/i.test(profilePicture)
-    ) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Invalid image format. Must be an image file (.jpg, .jpeg or .png).",
-      });
-    }
-
     const user = await signUp({
       fullname,
       age,
@@ -42,7 +30,6 @@ userRouter.post("/signup", async (req, res, next) => {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: "Failed to create user",
     });
   }
 });
@@ -412,5 +399,19 @@ userRouter.get(
     }
   }
 );
+
+{/*Check Duplicate Email on SignUp*/}
+userRouter.get("/check-email", async (req, res, next) => {
+  const { email } = req.query;
+  try {
+    const user = await userModel.findOne({ email });
+    res.json({ exists: !!user });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Unable to check duplicate email"
+    })
+  }
+});
 
 module.exports = userRouter;

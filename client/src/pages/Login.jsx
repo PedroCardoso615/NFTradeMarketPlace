@@ -1,15 +1,18 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5000/user/login", {
+      const res = await fetch("http://localhost:5000/user/login", {
         method: "POST",
         credentials: "include",
         headers: {
@@ -18,15 +21,21 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
       });
 
-      const { success, user } = await response.json();
+      const data = await res.json();
 
-      if (success) {
-        console.log("Login successful:", user);
-        setError("");
-      } else {
-        setError("Email or password is incorrect");
+      if (!res.ok) {
+        throw new Error(data.message || "Email or password is incorrect");
       }
+
+      toast.success("Login Successful!", { position: "top-right" });
+
+      setTimeout(() => {
+        navigate("/profile");
+      }, 1500);
     } catch (error) {
+      toast.error(error.message || "Login failed. Try again.", {
+        position: "top-right",
+      });
       console.error("Error during login:", error);
     }
   };
@@ -51,7 +60,6 @@ const Login = () => {
         />
         <button type="submit">Login</button>
       </form>
-      {error && <p>{error}</p>}
     </div>
   );
 };
