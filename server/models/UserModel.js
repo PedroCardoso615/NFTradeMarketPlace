@@ -38,7 +38,7 @@ const UserSchema = new Schema({
     default: null
   },
   permissions: {},
-  resetPPasswordToken: {
+  resetPasswordToken: {
     type: String,
     default: null
   },

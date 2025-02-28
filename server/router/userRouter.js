@@ -157,7 +157,7 @@ userRouter.post("/forgot-password", async (req, res) => {
     if (!user) {
       return res
         .status(404)
-        .json({ success: false, message: "User not found" });
+        .json({ success: false, message: "User not found." });
     }
 
     const resetToken = crypto.randomBytes(32).toString("hex");
@@ -227,7 +227,7 @@ userRouter.post("/reset-password/:token", async (req, res) => {
 
     res.json({
       success: true,
-      message: "Password reset successful",
+      message: "Password reset successful.",
     });
   } catch (error) {
     console.error(error);

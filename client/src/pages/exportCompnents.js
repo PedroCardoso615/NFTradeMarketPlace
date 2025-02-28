@@ -1,5 +1,7 @@
-import Login from "./Login";
-import Signup from "./Signup";
-import Profile from "./Profile";
+import Login from "./User/Login";
+import Signup from "./User/Signup";
+import Profile from "./User/Profile";
+import ForgotPass from "./User/ForgotPass";
+import ResetPass from "./User/ResetPass";
 
-export {Login, Signup, Profile};
+export { Login, Signup, Profile, ForgotPass, ResetPass };
