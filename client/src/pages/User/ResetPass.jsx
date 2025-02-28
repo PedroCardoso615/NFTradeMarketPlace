@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";  // Importing toastify
+import { toast } from "react-toastify";
 
 const ResetPassword = () => {
-  const { token } = useParams(); // Get the token from the URL
+  const { token } = useParams();
   const navigate = useNavigate();
 
   const [newPassword, setNewPassword] = useState("");
@@ -16,7 +16,6 @@ const ResetPassword = () => {
     }
   }, [token, navigate]);
 
-  // Password Validation Function
   const validatePassword = () => {
     if (!newPassword || !confirmPassword) {
       return "Both password fields are required.";
@@ -31,7 +30,7 @@ const ResetPassword = () => {
       return "Password must be at least 8 characters long, include one uppercase letter, two numbers, and one special character.";
     }
 
-    return ""; // Return empty if no error
+    return "";
   };
 
   const handlePasswordReset = async (e) => {

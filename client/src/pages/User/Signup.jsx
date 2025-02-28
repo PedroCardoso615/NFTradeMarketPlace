@@ -1,97 +1,144 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { storage } from "../../config/firebaseConfig";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
-const ResetPassword = () => {
-  const { token } = useParams(); // Get the token from the URL
-  const navigate = useNavigate();
-
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+const Signup = () => {
+  const [fullname, setFullname] = useState("");
+  const [age, setAge] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [profilePicture, setProfilePicture] = useState(null);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (!token) {
-      toast.error("Invalid reset token.", { position: "top-right" });
-      navigate("/login");
-    }
-  }, [token, navigate]);
+  const navigate = useNavigate();
+  const fileInputClear = useRef(null);
 
-  // Password Validation Function
-  const validatePassword = () => {
-    if (!newPassword || !confirmPassword) {
-      return "Both password fields are required.";
+  const validateForm = async () => {
+    if (!fullname || !age || !email || !password || !profilePicture) {
+      return "All fields are required.";
     }
-
-    if (newPassword !== confirmPassword) {
-      return "Passwords do not match.";
+    if (age < 18) {
+      return "You must be at least 18 years old.";
     }
 
     const passwordPattern = /^(?=.*[A-Z])(?=.*\d.*\d)(?=.*[\W_]).{8,}$/;
-    if (!passwordPattern.test(newPassword)) {
+    if (!passwordPattern.test(password)) {
       return "Password must be at least 8 characters long, include one uppercase letter, two numbers, and one special character.";
     }
 
-    return ""; // Return empty if no error
-  };
-
-  const handlePasswordReset = async (e) => {
-    e.preventDefault();
-    setError(""); // Clear previous error messages
-
-    const validationMessage = validatePassword();
-    if (validationMessage) {
-      toast.error(validationMessage, { position: "top-right" });
-      return;
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailPattern.test(email)) {
+      return "Please enter a valid email address.";
     }
 
     try {
-      const res = await fetch(`http://localhost:5000/user/reset-password/${token}`, {
+      const response = await fetch(
+        `http://localhost:5000/user/check-email?email=${email}`
+      );
+      const data = await response.json();
+
+      if (data.exists) {
+        return "Email already exists.";
+      }
+    } catch (error) {
+      console.error(error);
+      return "Server error. Try again later.";
+    }
+
+    return "";
+  };
+
+  const handleSignUp = async () => {
+    const errorMessage = await validateForm();
+
+    if (errorMessage) {
+      toast.error(errorMessage, { position: "top-right" });
+    return;
+    }
+
+    setError("");
+
+    try {
+      const imageRef = ref(storage, `profilePictures/${profilePicture.name}`);
+      await uploadBytes(imageRef, profilePicture);
+      const imgUrl = await getDownloadURL(imageRef);
+
+      const res = await fetch("http://localhost:5000/user/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ newPassword }),
+        body: JSON.stringify({
+          fullname,
+          age,
+          email,
+          password,
+          profilePicture: imgUrl,
+        }),
       });
 
       const data = await res.json();
-      if (!res.ok) {
-        toast.error(data.message || "Password reset failed. Try again.", { position: "top-right" });
-        return;
-      }
+      if (!res.ok) throw new Error(data.message || "Signup failed.");
 
-      toast.success(data.message || "Password reset successful. You can now login.", { position: "top-right" });
+      setFullname("");
+      setAge("");
+      setEmail("");
+      setPassword("");
+      setProfilePicture(null);
+      fileInputClear.current.value = "";
+
+      toast.success("Signup Successful!", { position: "top-right" });
+
       setTimeout(() => {
         navigate("/login");
       }, 1500);
-    } catch (error) {
-      toast.error("An error occurred while resetting the password. Try again later.", { position: "top-right" });
-      console.error(error);
+    } catch (err) {
+      toast.error(err.message || "Signup failed. Try again.", {
+        position: "top-right",
+      });
+      console.error(err);
     }
   };
 
   return (
-    <div className="reset-password-container">
-      <h2>Reset Your Password</h2>
+    <div className="signup-container">
+      <h2>Sign Up</h2>
 
       {error && <p className="error-message">{error}</p>}
 
-      <form onSubmit={handlePasswordReset}>
-        <input
-          type="password"
-          placeholder="New Password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Confirm New Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-        <button type="submit">Reset Password</button>
-      </form>
+      <input
+        type="text"
+        placeholder="Full Name"
+        value={fullname}
+        onChange={(e) => setFullname(e.target.value)}
+      />
+      <input
+        type="number"
+        placeholder="Age"
+        value={age}
+        onChange={(e) => setAge(e.target.value)}
+      />
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <input
+        type="file"
+        accept="image/*"
+        ref={fileInputClear}
+        onChange={(e) => setProfilePicture(e.target.files[0])}
+      />
+      <button onClick={handleSignUp}>Sign Up</button>
     </div>
   );
 };
 
-export default ResetPassword;
+export default Signup;
