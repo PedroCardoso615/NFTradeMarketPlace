@@ -105,17 +105,6 @@ userRouter.put("/update", authenticateUser, async (req, res, next) => {
       user.age = age;
     }
     if (profilePicture) {
-      if (
-        !profilePicture ||
-        typeof profilePicture !== "string" ||
-        !/\.(jpg|jpeg|png)$/i.test(profilePicture)
-      ) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "Invalid image format. Must be an image file (.jpg, .jpeg or .png).",
-        });
-      }
       user.profilePicture = profilePicture;
     }
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { TextField, Button, CircularProgress, Container, Paper, Typography, Box } from "@mui/material";
 
 const ResetPassword = () => {
   const { token } = useParams();
@@ -8,6 +9,7 @@ const ResetPassword = () => {
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!token) {
@@ -35,10 +37,12 @@ const ResetPassword = () => {
 
   const handlePasswordReset = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const validationMessage = validatePassword();
     if (validationMessage) {
       toast.error(validationMessage, { position: "top-right" });
+      setLoading(false);
       return;
     }
 
@@ -55,37 +59,54 @@ const ResetPassword = () => {
         return;
       }
 
-      toast.success(data.message || "Password reset successful. You can now login.", { position: "top-right" });
+      toast.success(data.message || "Password reset successful. You can now log in.", { position: "top-right" });
+
       setTimeout(() => {
         navigate("/login");
       }, 1500);
     } catch (error) {
       toast.error("An error occurred while resetting the password. Try again later.", { position: "top-right" });
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="reset-password-container">
-      <h2>Reset Your Password</h2>
+    <Container maxWidth="sm">
+      <Paper elevation={3} sx={{ padding: 4, mt: 5, textAlign: "center" }}>
+        <Typography variant="h5" gutterBottom>
+          Reset Your Password
+        </Typography>
+        <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+          Enter a new password to reset your account.
+        </Typography>
 
-      <form onSubmit={handlePasswordReset}>
-        <input
-          type="password"
-          placeholder="New Password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Confirm New Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-        <button type="submit">Reset Password</button>
-      </form>
-    </div>
+        <Box component="form" onSubmit={handlePasswordReset} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <TextField
+            type="password"
+            label="New Password"
+            variant="outlined"
+            fullWidth
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          <TextField
+            type="password"
+            label="Confirm New Password"
+            variant="outlined"
+            fullWidth
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+          <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading}>
+            {loading ? <CircularProgress size={24} /> : "Reset Password"}
+          </Button>
+        </Box>
+      </Paper>
+    </Container>
   );
 };
 
 export default ResetPassword;
+

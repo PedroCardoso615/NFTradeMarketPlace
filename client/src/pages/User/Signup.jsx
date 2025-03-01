@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { storage } from "../../config/firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { toast } from "react-toastify";
+import { Container, TextField, Button, Typography, Box } from "@mui/material";
 
 const Signup = () => {
   const [fullname, setFullname] = useState("");
@@ -34,9 +35,7 @@ const Signup = () => {
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:5000/user/check-email?email=${email}`
-      );
+      const response = await fetch(`http://localhost:5000/user/check-email?email=${email}`);
       const data = await response.json();
 
       if (data.exists) {
@@ -55,7 +54,7 @@ const Signup = () => {
 
     if (errorMessage) {
       toast.error(errorMessage, { position: "top-right" });
-    return;
+      return;
     }
 
     setError("");
@@ -101,44 +100,93 @@ const Signup = () => {
   };
 
   return (
-    <div className="signup-container">
-      <h2>Sign Up</h2>
+    <Container maxWidth="sm">
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          mt: 5,
+          p: 4,
+          boxShadow: 3,
+          borderRadius: 2,
+          bgcolor: "background.paper",
+        }}
+      >
+        <Typography variant="h4" gutterBottom>
+          Sign Up
+        </Typography>
 
-      {error && <p className="error-message">{error}</p>}
+        {error && <Typography color="error">{error}</Typography>}
 
-      <input
-        type="text"
-        placeholder="Full Name"
-        value={fullname}
-        onChange={(e) => setFullname(e.target.value)}
-      />
-      <input
-        type="number"
-        placeholder="Age"
-        value={age}
-        onChange={(e) => setAge(e.target.value)}
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <input
-        type="file"
-        accept="image/*"
-        ref={fileInputClear}
-        onChange={(e) => setProfilePicture(e.target.files[0])}
-      />
-      <button onClick={handleSignUp}>Sign Up</button>
-    </div>
+        <TextField
+          label="Full Name"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          value={fullname}
+          onChange={(e) => setFullname(e.target.value)}
+          required
+        />
+        <TextField
+          label="Age"
+          type="number"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          value={age}
+          onChange={(e) => setAge(e.target.value)}
+          required
+        />
+        <TextField
+          label="Email"
+          type="email"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <TextField
+          label="Password"
+          type="password"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+
+        <Button
+          variant="contained"
+          component="label"
+          sx={{ mt: 2, mb: 2 }}
+        >
+          Upload Profile Picture
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputClear}
+            hidden
+            onChange={(e) => setProfilePicture(e.target.files[0])}
+          />
+        </Button>
+
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          onClick={handleSignUp}
+          sx={{ mt: 2 }}
+        >
+          Sign Up
+        </Button>
+      </Box>
+    </Container>
   );
 };
 
 export default Signup;
+
