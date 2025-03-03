@@ -123,6 +123,7 @@ const Profile = () => {
       />
       <Typography variant="h6"><strong>Full Name:</strong> {user.fullname}</Typography>
       <Typography variant="h6"><strong>Email:</strong> {user.email}</Typography>
+      <Typography variant="h6"><strong>Balance:</strong> {user.balance}</Typography>
 
       <Button variant="contained" color="primary" onClick={() => setIsPopupOpen(true)} sx={{ mt: 2 }}>
         Update Profile

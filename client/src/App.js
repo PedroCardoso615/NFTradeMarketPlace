@@ -1,12 +1,20 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import {Login, Signup, Profile, ForgotPass, ResetPass} from './pages/exportCompnents';
+import {
+  Navbar,
+  Login,
+  Signup,
+  Profile,
+  ForgotPass,
+  ResetPass,
+} from "./pages/exportComponents";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
     <Router>
-      <ToastContainer autoClose={2000}/>
+      <ToastContainer autoClose={2000} />
+      <Navbar />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

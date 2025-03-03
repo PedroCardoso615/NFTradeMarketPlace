@@ -28,6 +28,7 @@ const UserSchema = new Schema({
   balance: {
     type: Number,
     default: 5.00,
+    set: (value) => Number(value.toFixed(3))
   },
   favorites: [{
     type: Schema.Types.ObjectId,
