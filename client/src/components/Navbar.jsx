@@ -1,11 +1,28 @@
 import React, { useState, useEffect } from "react";
-import { AppBar, Toolbar, IconButton, Menu, MenuItem, Badge, Box, Typography, TextField, Avatar, Divider, Button, CircularProgress } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Menu,
+  MenuItem,
+  Badge,
+  Box,
+  TextField,
+  Avatar,
+  Divider,
+  Button,
+  CircularProgress,
+} from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Link, useNavigate } from "react-router-dom";
+import logo from "../images/LogoNoBG.png";
 
 const Navbar = () => {
-  const [menuAnchor, setMenuAnchor] = useState({ catalogMenu: null, featuredMenu: null });
+  const [menuAnchor, setMenuAnchor] = useState({
+    catalogMenu: null,
+    featuredMenu: null,
+  });
   const [notificationMenu, setNotificationMenu] = useState(null);
   const [profileMenu, setProfileMenu] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
@@ -17,7 +34,9 @@ const Navbar = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch("http://localhost:5000/user/me", { credentials: "include" });
+        const response = await fetch("http://localhost:5000/user/me", {
+          credentials: "include",
+        });
         const data = await response.json();
         if (data.success) setCurrentUser(data.user);
       } catch (error) {
@@ -33,7 +52,9 @@ const Navbar = () => {
     if (currentUser) {
       const fetchNotifications = async () => {
         try {
-          const response = await fetch("http://localhost:5000/notification", { credentials: "include" });
+          const response = await fetch("http://localhost:5000/notification", {
+            credentials: "include",
+          });
           const data = await response.json();
           if (data.success) setUserNotifications(data.data);
         } catch (error) {
@@ -52,7 +73,9 @@ const Navbar = () => {
         method: "PUT",
         credentials: "include",
       });
-      setUserNotifications((prev) => prev.map((noti) => ({ ...noti, isRead: true })));
+      setUserNotifications((prev) =>
+        prev.map((noti) => ({ ...noti, isRead: true }))
+      );
     } catch (error) {
       console.error("Error marking notifications as read:", error);
     }
@@ -62,7 +85,10 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:5000/user/logout", { method: "POST", credentials: "include" });
+      await fetch("http://localhost:5000/user/logout", {
+        method: "POST",
+        credentials: "include",
+      });
       setCurrentUser(null);
       navigate("/login");
     } catch (error) {
@@ -73,41 +99,104 @@ const Navbar = () => {
   if (userLoading) return <CircularProgress />;
 
   return (
-    <AppBar position="static" sx={{ bgcolor: "#212121", p: 1 }}>
+    <AppBar position="static" sx={{ bgcolor: "#545454", p: 1 }}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Typography variant="h6" sx={{ fontWeight: "bold", color: "#fff" }}>NFTrade</Typography>
-          <TextField variant="outlined" size="small" placeholder="Search NFTs..." sx={{ bgcolor: "#fff", borderRadius: 1 }} />
+          <Link to="/">
+            <Box
+              component="img"
+              src={logo}
+              alt="NFTrade Logo"
+              sx={{ height: 50, width: 50 }}
+            />
+          </Link>
+          <TextField
+            variant="outlined"
+            size="small"
+            placeholder="Search NFTs..."
+            sx={{ bgcolor: "#fff", borderRadius: 1 }}
+          />
         </Box>
 
         <Box sx={{ display: "flex", gap: 3, color: "#fff" }}>
-          <Button color="inherit" component={Link} to="/">Home</Button>
-          <Button color="inherit" onClick={(e) => setMenuAnchor({ ...menuAnchor, catalogMenu: e.currentTarget })} endIcon={<KeyboardArrowDownIcon />}>Catalog</Button>
-          <Menu anchorEl={menuAnchor.catalogMenu} open={Boolean(menuAnchor.catalogMenu)} onClose={() => setMenuAnchor({ ...menuAnchor, catalogMenu: null })}>
-            <MenuItem component={Link} to="/nfts">All NFTs</MenuItem>
-            <MenuItem component={Link} to="/create">Create Your Own</MenuItem>
+          <Button color="inherit" component={Link} to="/">
+            Home
+          </Button>
+          <Button
+            color="inherit"
+            onClick={(e) =>
+              setMenuAnchor({ ...menuAnchor, catalogMenu: e.currentTarget })
+            }
+            endIcon={<KeyboardArrowDownIcon />}
+          >
+            Catalog
+          </Button>
+          <Menu
+            anchorEl={menuAnchor.catalogMenu}
+            open={Boolean(menuAnchor.catalogMenu)}
+            onClose={() => setMenuAnchor({ ...menuAnchor, catalogMenu: null })}
+          >
+            <MenuItem component={Link} to="/nfts">
+              All NFTs
+            </MenuItem>
+            <MenuItem component={Link} to="/create">
+              Create Your Own
+            </MenuItem>
           </Menu>
-          <Button color="inherit" onClick={(e) => setMenuAnchor({ ...menuAnchor, featuredMenu: e.currentTarget })} endIcon={<KeyboardArrowDownIcon />}>Featured</Button>
-          <Menu anchorEl={menuAnchor.featuredMenu} open={Boolean(menuAnchor.featuredMenu)} onClose={() => setMenuAnchor({ ...menuAnchor, featuredMenu: null })}>
-            <MenuItem component={Link} to="/trending">Trending NFTs</MenuItem>
-            <MenuItem component={Link} to="/top-creators">Top Creators</MenuItem>
+          <Button
+            color="inherit"
+            onClick={(e) =>
+              setMenuAnchor({ ...menuAnchor, featuredMenu: e.currentTarget })
+            }
+            endIcon={<KeyboardArrowDownIcon />}
+          >
+            Featured
+          </Button>
+          <Menu
+            anchorEl={menuAnchor.featuredMenu}
+            open={Boolean(menuAnchor.featuredMenu)}
+            onClose={() => setMenuAnchor({ ...menuAnchor, featuredMenu: null })}
+          >
+            <MenuItem component={Link} to="/trending">
+              Trending NFTs
+            </MenuItem>
+            <MenuItem component={Link} to="/top-creators">
+              Top Creators
+            </MenuItem>
           </Menu>
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <IconButton color="inherit" onClick={(e) => setNotificationMenu(e.currentTarget)}>
+          <IconButton
+            color="inherit"
+            onClick={(e) => setNotificationMenu(e.currentTarget)}
+          >
             <Badge badgeContent={unreadCount} color="error">
               <NotificationsIcon />
             </Badge>
           </IconButton>
-          <Menu anchorEl={notificationMenu} open={Boolean(notificationMenu)} onClose={() => setNotificationMenu(null)} sx={{ maxHeight: 300, overflowY: "auto" }}>
+          <Menu
+            anchorEl={notificationMenu}
+            open={Boolean(notificationMenu)}
+            onClose={() => setNotificationMenu(null)}
+            sx={{ maxHeight: 300, overflowY: "auto" }}
+          >
             {notificationLoading ? (
-              <MenuItem><CircularProgress size={24} /></MenuItem>
+              <MenuItem>
+                <CircularProgress size={24} />
+              </MenuItem>
             ) : userNotifications.length > 0 ? (
               <>
-                {userNotifications.slice(0, 5).map((noti) => <MenuItem key={noti._id}>{noti.message}</MenuItem>)}
+                {userNotifications.slice(0, 5).map((noti) => (
+                  <MenuItem key={noti._id}>{noti.message}</MenuItem>
+                ))}
                 <Divider />
-                <MenuItem onClick={handleNotificationsRead} sx={{ fontWeight: "bold", textAlign: "center" }}>Mark all as read</MenuItem>
+                <MenuItem
+                  onClick={handleNotificationsRead}
+                  sx={{ fontWeight: "bold", textAlign: "center" }}
+                >
+                  Mark all as read
+                </MenuItem>
               </>
             ) : (
               <MenuItem>No notifications</MenuItem>
@@ -116,20 +205,40 @@ const Navbar = () => {
 
           {currentUser ? (
             <>
-              <IconButton color="inherit" onClick={(e) => setProfileMenu(e.currentTarget)}>
-                <Avatar src={currentUser.profilePicture} sx={{ width: 32, height: 32 }} />
+              <IconButton
+                color="inherit"
+                onClick={(e) => setProfileMenu(e.currentTarget)}
+              >
+                <Avatar
+                  src={currentUser.profilePicture}
+                  sx={{ width: 32, height: 32 }}
+                />
               </IconButton>
-              <Menu anchorEl={profileMenu} open={Boolean(profileMenu)} onClose={() => setProfileMenu(null)}>
-                <MenuItem component={Link} to="/profile">Profile</MenuItem>
-                <MenuItem component={Link} to="/my-collection">My Collection</MenuItem>
-                <MenuItem component={Link} to="/favorites">Favorites</MenuItem>
-                <MenuItem component={Link} to="/daily-rewards">Daily Rewards</MenuItem>
+              <Menu
+                anchorEl={profileMenu}
+                open={Boolean(profileMenu)}
+                onClose={() => setProfileMenu(null)}
+              >
+                <MenuItem component={Link} to="/profile">
+                  Profile
+                </MenuItem>
+                <MenuItem component={Link} to="/my-collection">
+                  My Collection
+                </MenuItem>
+                <MenuItem component={Link} to="/favorites">
+                  Favorites
+                </MenuItem>
+                <MenuItem component={Link} to="/daily-rewards">
+                  Daily Rewards
+                </MenuItem>
                 <Divider />
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
             </>
           ) : (
-            <Button color="inherit" component={Link} to="/login">Login</Button>
+            <Button color="inherit" component={Link} to="/login">
+              Login
+            </Button>
           )}
         </Box>
       </Toolbar>
