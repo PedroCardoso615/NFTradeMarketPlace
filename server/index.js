@@ -16,7 +16,7 @@ const app = express();
 
 const configureApi = () => {
     app.use(cors({
-        origin: 'http://localhost:3000',
+        origin: '*',
         credentials: true
     }));
     app.use(express.json());
