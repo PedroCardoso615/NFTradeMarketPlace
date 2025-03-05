@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "../images/LogoNoBG.png";
 
 const Navbar = () => {
@@ -29,7 +29,9 @@ const Navbar = () => {
   const [userNotifications, setUserNotifications] = useState([]);
   const [userLoading, setUserLoading] = useState(true);
   const [notificationLoading, setNotificationLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -90,6 +92,7 @@ const Navbar = () => {
         credentials: "include",
       });
       setCurrentUser(null);
+      localStorage.removeItem("authToken");
       navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
@@ -97,6 +100,17 @@ const Navbar = () => {
   };
 
   if (userLoading) return <CircularProgress />;
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/nft?search=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  if (location.pathname === "/login" || location.pathname === "/signup") {
+    return null;
+  }
 
   return (
     <AppBar position="static" sx={{ bgcolor: "#545454", p: 1 }}>
@@ -114,6 +128,11 @@ const Navbar = () => {
             variant="outlined"
             size="small"
             placeholder="Search NFTs..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSearch(e);
+            }}
             sx={{ bgcolor: "#fff", borderRadius: 1 }}
           />
         </Box>
@@ -186,18 +205,21 @@ const Navbar = () => {
                 <CircularProgress size={24} />
               </MenuItem>
             ) : userNotifications.length > 0 ? (
-              <>
-                {userNotifications.slice(0, 5).map((noti) => (
-                  <MenuItem key={noti._id}>{noti.message}</MenuItem>
-                ))}
-                <Divider />
+              [
+                ...userNotifications
+                  .slice(0, 5)
+                  .map((noti) => (
+                    <MenuItem key={noti._id}>{noti.message}</MenuItem>
+                  )),
+                <Divider key="divider" />,
                 <MenuItem
+                  key="mark-all"
                   onClick={handleNotificationsRead}
                   sx={{ fontWeight: "bold", textAlign: "center" }}
                 >
                   Mark all as read
-                </MenuItem>
-              </>
+                </MenuItem>,
+              ]
             ) : (
               <MenuItem>No notifications</MenuItem>
             )}

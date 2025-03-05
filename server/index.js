@@ -14,44 +14,48 @@ const checkDailyRewards = require("./utils/dailyRewardCheck");
 
 const app = express();
 
+const corsOptions = {
+  origin: "http://localhost:3000",
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+};
+
 const configureApi = () => {
-    app.use(cors({
-        origin: '*',
-        credentials: true
-    }));
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: false }));
+  app.use(cors(corsOptions));
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: false }));
 
-    app.use(cookieParser());
+  app.use(cookieParser());
 
-    app.use("/user", userRouter);
-    app.use("/nft", nftRouter);
-    app.use("/top-creators", creatorsRouter);
-    app.use("/trending-nfts", trendnftRouter);
-    app.use("/notification", notificationRouter);
-}
+  app.use("/user", userRouter);
+  app.use("/nft", nftRouter);
+  app.use("/top-creators", creatorsRouter);
+  app.use("/trending-nfts", trendnftRouter);
+  app.use("/notification", notificationRouter);
+};
 
 const startUpServer = async () => {
-    console.log("Starting up server...");
+  console.log("Starting up server...");
 
-    configureApi();
-    await createConnectionWithDb();
+  configureApi();
+  await createConnectionWithDb();
 
-    checkDailyRewards();
+  checkDailyRewards();
 
-    app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
-    });
-}
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+};
 
 const shutDownServer = async () => {
-    await closeConnectionWithDb();
-    process.exit(0);
-}
+  await closeConnectionWithDb();
+  process.exit(0);
+};
 
 process.on("SIGINT", shutDownServer);
 
 startUpServer().catch((error) => {
-    console.error("Error starting up server:", error);
-    shutDownServer();
+  console.error("Error starting up server:", error);
+  shutDownServer();
 });

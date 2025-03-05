@@ -13,6 +13,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import NFToken from "../../images/NFToken.png"
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -123,7 +124,12 @@ const Profile = () => {
       />
       <Typography variant="h6"><strong>Full Name:</strong> {user.fullname}</Typography>
       <Typography variant="h6"><strong>Email:</strong> {user.email}</Typography>
-      <Typography variant="h6"><strong>Balance:</strong> {user.balance}</Typography>
+      
+      <Typography variant="h6" sx={{ display: 'flex', justifyContent: 'center' }}>
+        <strong>Balance:</strong>
+        <span style={{marginLeft: 8}}>{user.balance}</span>
+        <img src={NFToken} alt="NFTokens" style={{ width: 35, height: 35 }} />
+      </Typography>
 
       <Button variant="contained" color="primary" onClick={() => setIsPopupOpen(true)} sx={{ mt: 2 }}>
         Update Profile

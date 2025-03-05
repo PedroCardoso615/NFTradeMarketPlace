@@ -6,6 +6,7 @@ import {
   Profile,
   ForgotPass,
   ResetPass,
+  SearchPage,
 } from "./pages/exportComponents";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -21,6 +22,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/forgot-password" element={<ForgotPass />} />
         <Route path="/reset-password/:token" element={<ResetPass />} />
+        <Route path="/nft" element={<SearchPage />}/>
       </Routes>
     </Router>
   );
