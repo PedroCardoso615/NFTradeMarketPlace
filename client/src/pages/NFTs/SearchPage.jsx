@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -150,18 +150,23 @@ const SearchResults = () => {
           {results.map((nft) => (
             <Card
               key={nft._id}
-              component={Link}
-              to={`/nft/${nft._id}`}
-              sx={{ textDecoration: "none", color: "inherit" }}
+              sx={{
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+                transition: "transform 0.3s ease",
+                "&:hover": { transform: "scale(1.05)" },
+              }}
             >
               <CardMedia
                 component="img"
-                height="200"
+                height="300"
                 image={nft.image}
                 alt={nft.NFTName}
               />
               <CardContent>
-                <Typography variant="h6">{nft.NFTName}</Typography>
+                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                  {nft.NFTName}
+                </Typography>
                 <Typography variant="body2" color="textSecondary">
                   {nft.description}
                 </Typography>

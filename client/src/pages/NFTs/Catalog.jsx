@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -38,8 +37,8 @@ const Catalog = () => {
       });
 
       try {
-        const response = await fetch(`http://localhost:5000/nft?${params}`);
-        const data = await response.json();
+        const res = await fetch(`http://localhost:5000/nft?${params}`);
+        const data = await res.json();
         if (data.success) {
           setNfts(Array.isArray(data.data) ? data.data : []);
         }
@@ -67,7 +66,12 @@ const Catalog = () => {
       <Box sx={{ mt: 3, display: "flex", justifyContent: "space-between" }}>
         <FormControl sx={{ width: 200 }}>
           <InputLabel>Sort By</InputLabel>
-          <Select name="sort" value={filters.sort} onChange={handleFilterChange} label="Sort By">
+          <Select
+            name="sort"
+            value={filters.sort}
+            onChange={handleFilterChange}
+            label="Sort By"
+          >
             <MenuItem value="">None</MenuItem>
             <MenuItem value="price_asc">Price: Low to High</MenuItem>
             <MenuItem value="price_desc">Price: High to Low</MenuItem>
@@ -134,18 +138,49 @@ const Catalog = () => {
           }}
         >
           {nfts.map((nft) => (
-            <Card key={nft._id} component={Link} to={`/nft/${nft._id}`} sx={{ textDecoration: "none", color: "inherit" }}>
-              <CardMedia component="img" height="200" image={nft.image} alt={nft.NFTName} />
+            <Card
+              key={nft._id}
+              sx={{
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+                transition: "transform 0.3s ease",
+                "&:hover": { transform: "scale(1.05)" },
+              }}
+            >
+              <CardMedia
+                component="img"
+                height="300"
+                image={nft.image}
+                alt={nft.NFTName}
+              />
               <CardContent>
-                <Typography variant="h6">{nft.NFTName}</Typography>
-                <Typography variant="body2" color="textSecondary">{nft.description}</Typography>
-                <Typography variant="body1" fontWeight="bold" sx={{ display: "flex", alignItems: "center" }}>
-                  {nft.price}
-                  <img src={NFToken} alt="NFToken" style={{ width: 35, height: 35 }} />
+                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                  {nft.NFTName}
                 </Typography>
-                <Typography variant="body2">Owner: {nft.owner?.fullname}</Typography>
-                <Typography variant="body2">Creator: {nft.creator?.fullname}</Typography>
-                <Typography variant="body2">Royalty: {nft.royalty}%</Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {nft.description}
+                </Typography>
+                <Typography
+                  variant="body1"
+                  fontWeight="bold"
+                  sx={{ display: "flex", alignItems: "center" }}
+                >
+                  {nft.price}
+                  <img
+                    src={NFToken}
+                    alt="NFToken"
+                    style={{ width: 35, height: 35 }}
+                  />
+                </Typography>
+                <Typography variant="body2">
+                  Owner: {nft.owner?.fullname}
+                </Typography>
+                <Typography variant="body2" sx={{ mt: 1 }}>
+                  Creator: {nft.creator?.fullname}
+                </Typography>
+                <Typography variant="body2" sx={{ mt: 1 }}>
+                  Royalty: {nft.royalty}%
+                </Typography>
               </CardContent>
             </Card>
           ))}

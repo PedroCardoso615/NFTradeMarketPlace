@@ -8,6 +8,8 @@ import {
   ResetPass,
   SearchPage,
   Catalog,
+  TrendingNFTs,
+  TopCreators
 } from "./pages/exportComponents";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -25,6 +27,8 @@ function App() {
         <Route path="/reset-password/:token" element={<ResetPass />} />
         <Route path="/nft" element={<SearchPage />}/>
         <Route path="/nfts" element={<Catalog />}/>
+        <Route path="/trending" element={<TrendingNFTs />}/>
+        <Route path="/top-creators" element={<TopCreators />}/>
       </Routes>
     </Router>
   );
