@@ -135,7 +135,6 @@ const TrendingNFTs = () => {
     <Box sx={{ p: 3 }}>
       <Typography variant="h4">Trending NFTs</Typography>
 
-      {/* Display "No NFTs Found" message if no NFTs are available */}
       {nfts.length === 0 ? (
         <Typography sx={{ mt: 3 }}>No NFTs found.</Typography>
       ) : (
@@ -227,7 +226,6 @@ const TrendingNFTs = () => {
         </Box>
       )}
 
-      {/* Purchase Confirmation Dialog */}
       <Dialog open={openDialog} onClose={handleCancel}>
         <DialogTitle>Confirm Purchase</DialogTitle>
         <DialogContent>
