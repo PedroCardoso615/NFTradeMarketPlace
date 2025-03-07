@@ -146,6 +146,7 @@ const TrendingNFTs = () => {
               : nft
           )
         );
+        setNfts((prev) => prev.filter((nft) => nft._id !== selectedNft._id));
       } else {
         toast.error(data.message);
       }

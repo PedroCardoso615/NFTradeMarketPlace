@@ -163,7 +163,7 @@ const SearchResults = () => {
               : nft
           )
         );
-        setLoading(true)
+        setNfts((prev) => prev.filter((nft) => nft._id !== selectedNft._id));
       } else {
         toast.error(data.message);
       }

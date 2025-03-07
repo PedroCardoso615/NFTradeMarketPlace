@@ -15,7 +15,7 @@ import {
   Divider,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder"; // Now it's used
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import NFToken from "../../images/NFToken.png";
 import { toast } from "react-toastify";
