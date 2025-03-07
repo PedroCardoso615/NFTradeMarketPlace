@@ -11,8 +11,20 @@ import {
   Select,
   MenuItem,
   Slider,
+  Button,
+  IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
 } from "@mui/material";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import NFToken from "../../images/NFToken.png";
+import { debounce } from "lodash";
+import { toast } from "react-toastify";
 
 const Catalog = () => {
   const [nfts, setNfts] = useState([]);
@@ -24,6 +36,9 @@ const Catalog = () => {
     maxRoyalty: 20,
     sort: "",
   });
+  const [likedNfts, setLikedNfts] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedNft, setSelectedNft] = useState(null);
 
   useEffect(() => {
     const fetchNFTs = async () => {
@@ -52,11 +67,96 @@ const Catalog = () => {
     fetchNFTs();
   }, [filters]);
 
-  const handleFilterChange = (e) => {
+  const debouncedHandleFilterChange = debounce((e) => {
     setFilters((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
+  }, 500);
+
+  const handleFilterChange = (e) => {
+    debouncedHandleFilterChange(e);
+  };
+
+  const handleLike = async (nftId) => {
+    try {
+      let res;
+      if (likedNfts.includes(nftId)) {
+        res = await fetch(`http://localhost:5000/nft/favorite/${nftId}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+      } else {
+        res = await fetch(`http://localhost:5000/nft/favorite/${nftId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+      }
+
+      const data = await res.json();
+
+      if (data.success) {
+        if (likedNfts.includes(nftId)) {
+          setLikedNfts((prev) => prev.filter((id) => id !== nftId));
+          toast.success("NFT removed from favorites!");
+        } else {
+          setLikedNfts((prev) => [...prev, nftId]);
+          toast.success("NFT added to favorites!");
+        }
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.error("Error toggling like on NFT:", error);
+      toast.error("Error updating favorite status.");
+    }
+  };
+
+  const handleBuyClick = (nft) => {
+    setSelectedNft(nft);
+    setOpenDialog(true);
+  };
+
+  const handleCancel = () => {
+    setOpenDialog(false);
+    setSelectedNft(null);
+  };
+
+  const handleBuy = async () => {
+    try {
+      const res = await fetch(`http://localhost:5000/nft/buy/${selectedNft._id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        toast.success("NFT purchased successfully!");
+        setNfts((prev) =>
+          prev.map((nft) =>
+            nft._id === selectedNft._id ? { ...nft, owner: { fullname: "You" } } : nft
+          )
+        );
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.error("Error buying NFT:", error);
+      toast.error("Error purchasing NFT.");
+    } finally {
+      setOpenDialog(false);
+      setSelectedNft(null);
+    }
   };
 
   return (
@@ -172,15 +272,32 @@ const Catalog = () => {
                     style={{ width: 35, height: 35 }}
                   />
                 </Typography>
-                <Typography variant="body2">
-                  Owner: {nft.owner?.fullname}
-                </Typography>
-                <Typography variant="body2" sx={{ mt: 1 }}>
-                  Creator: {nft.creator?.fullname}
-                </Typography>
-                <Typography variant="body2" sx={{ mt: 1 }}>
-                  Royalty: {nft.royalty}%
-                </Typography>
+                <Typography variant="body2">Owner: {nft.owner?.fullname}</Typography>
+                <Typography variant="body2">Creator: {nft.creator?.fullname}</Typography>
+                <Typography variant="body2">Royalty: {nft.royalty}%</Typography>
+
+                <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
+                  <IconButton
+                    onClick={() => handleLike(nft._id)}
+                    sx={{
+                      color: likedNfts.includes(nft._id) ? "red" : "gray"
+                    }}
+                  >
+                    {likedNfts.includes(nft._id) ? (
+                      <FavoriteIcon />
+                    ) : (
+                      <FavoriteBorderIcon />
+                    )}
+                  </IconButton>
+                  <Button
+                    onClick={() => handleBuyClick(nft)}
+                    variant="contained"
+                    color="primary"
+                    startIcon={<ShoppingCartIcon />}
+                  >
+                    Buy
+                  </Button>
+                </Box>
               </CardContent>
             </Card>
           ))}
@@ -188,6 +305,51 @@ const Catalog = () => {
       ) : (
         <Typography sx={{ mt: 3 }}>No NFTs found.</Typography>
       )}
+
+      <Dialog open={openDialog} onClose={handleCancel}>
+        <DialogTitle>Confirm Purchase</DialogTitle>
+        <DialogContent>
+          {selectedNft && (
+            <Box sx={{ minWidth: 400 }}>
+              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                {selectedNft.NFTName}
+              </Typography>
+              <Typography sx={{ mb: 1, color: "textSecondary" }}>
+                {selectedNft.description}
+              </Typography>
+
+              <Divider sx={{ my: 2 }} />
+
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="body1" sx={{display:"flex", alignItems:"center"}}>
+                  <strong>Price:</strong> {selectedNft.price}{" "}
+                  <img src={NFToken} alt="NFToken" style={{ width: 20 }} />
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Owner:</strong> {selectedNft.owner.fullname}
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Creator:</strong> {selectedNft.creator.fullname}
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Royalty:</strong> {selectedNft.royalty}%
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Created on:</strong> {new Date(selectedNft.createdAt).toLocaleDateString()}
+                </Typography>
+              </Box>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancel} sx={{color: "red"}}>
+            Cancel
+          </Button>
+          <Button onClick={handleBuy} color="primary">
+            Confirm Purchase
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
