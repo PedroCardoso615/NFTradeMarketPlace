@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -15,37 +15,16 @@ import {
   Divider,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder"; // Now it's used
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import NFToken from "../../images/NFToken.png";
 import { toast } from "react-toastify";
 
-const TrendingNFTs = () => {
-  const [nfts, setNfts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error] = useState(null);
+const Favorites = () => {
   const [likedNfts, setLikedNfts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedNft, setSelectedNft] = useState(null);
-
-  useEffect(() => {
-    const fetchTrendingNFTs = async () => {
-      try {
-        const res = await fetch("http://localhost:5000/trending-nfts");
-        if (!res.ok) {
-          throw new Error("Failed to fetch trending NFTs");
-        }
-        const data = await res.json();
-        setNfts(data);
-      } catch (error) {
-        console.error("Error fetching the NFTs:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTrendingNFTs();
-  }, []);
 
   useEffect(() => {
     const fetchFavorites = async () => {
@@ -58,57 +37,44 @@ const TrendingNFTs = () => {
           credentials: "include",
         });
         const data = await res.json();
-        if (data.success) {
-          setLikedNfts(data.favorites.map((fav) => fav._id));
+        if (data.success && Array.isArray(data.favorites)) {
+          setLikedNfts(data.favorites);
+        } else {
+          setLikedNfts([]);
         }
       } catch (error) {
         console.error("Error fetching favorites:", error);
+        setLikedNfts([]);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchFavorites();
   }, []);
 
-  if (loading) return <CircularProgress sx={{ mt: 3 }} />;
-  if (error) return <Typography color="error">Error: {error}</Typography>;
-
   const handleLike = async (nftId) => {
     try {
       let res;
-      if (likedNfts.includes(nftId)) {
-        res = await fetch(`http://localhost:5000/nft/favorite/${nftId}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
-      } else {
-        res = await fetch(`http://localhost:5000/nft/favorite/${nftId}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
-      }
+      res = await fetch(`http://localhost:5000/nft/favorite/${nftId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
 
       const data = await res.json();
 
       if (data.success) {
-        if (likedNfts.includes(nftId)) {
-          setLikedNfts((prev) => prev.filter((id) => id !== nftId));
-          toast.success("NFT removed from favorites!");
-        } else {
-          setLikedNfts((prev) => [...prev, nftId]);
-          toast.success("NFT added to favorites!");
-        }
+        setLikedNfts((prev) => prev.filter((nft) => nft._id !== nftId));
+        toast.success("NFT removed from favorites!");
       } else {
         toast.error(data.message);
       }
     } catch (error) {
-      console.error("Error toggling like on NFT:", error);
-      toast.error("Error updating favorite status.");
+      console.error("Error removing NFT from favorites:", error);
+      toast.error("Error removing NFT from favorites.");
     }
   };
 
@@ -139,13 +105,6 @@ const TrendingNFTs = () => {
 
       if (data.success) {
         toast.success("NFT purchased successfully!");
-        setNfts((prev) =>
-          prev.map((nft) =>
-            nft._id === selectedNft._id
-              ? { ...nft, owner: { fullname: "You" } }
-              : nft
-          )
-        );
       } else {
         toast.error(data.message);
       }
@@ -160,11 +119,11 @@ const TrendingNFTs = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4">Trending NFTs</Typography>
+      <Typography variant="h4">Favorites</Typography>
 
-      {nfts.length === 0 ? (
-        <Typography sx={{ mt: 3 }}>No NFTs found.</Typography>
-      ) : (
+      {loading ? (
+        <CircularProgress sx={{ mt: 3 }} />
+      ) : likedNfts.length > 0 ? (
         <Box
           sx={{
             display: "grid",
@@ -173,18 +132,11 @@ const TrendingNFTs = () => {
             mt: 3,
           }}
         >
-          {nfts.map((nft, index) => (
+          {likedNfts.map((nft) => (
             <Card
               key={nft._id}
               sx={{
-                border:
-                  index === 0
-                    ? "3px solid gold"
-                    : index === 1
-                    ? "3px solid silver"
-                    : index === 2
-                    ? "3px solid #cd7f32"
-                    : "none",
+                border: "1px solid #ccc",
                 borderRadius: "8px",
                 transition: "transform 0.3s ease",
                 "&:hover": { transform: "scale(1.05)" },
@@ -198,7 +150,7 @@ const TrendingNFTs = () => {
               />
               <CardContent>
                 <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                  #{index + 1} - {nft.NFTName}
+                  {nft.NFTName}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
                   {nft.description}
@@ -215,15 +167,8 @@ const TrendingNFTs = () => {
                     style={{ width: 35, height: 35 }}
                   />
                 </Typography>
-                <Typography variant="body2">
-                  Owner: {nft.owner?.fullname}
-                </Typography>
-                <Typography variant="body2" sx={{ mt: 1 }}>
-                  Creator: {nft.creator?.fullname}
-                </Typography>
-                <Typography variant="body2" sx={{ mt: 1 }}>
-                  Royalty: {nft.royalty}%
-                </Typography>
+
+                <Typography variant="body2">Royalty: {nft.royalty}%</Typography>
 
                 <Box
                   sx={{
@@ -235,10 +180,10 @@ const TrendingNFTs = () => {
                   <IconButton
                     onClick={() => handleLike(nft._id)}
                     sx={{
-                      color: likedNfts.includes(nft._id) ? "red" : "gray",
+                      color: "red",
                     }}
                   >
-                    {likedNfts.includes(nft._id) ? (
+                    {likedNfts.some((likedNft) => likedNft._id === nft._id) ? (
                       <FavoriteIcon />
                     ) : (
                       <FavoriteBorderIcon />
@@ -257,6 +202,8 @@ const TrendingNFTs = () => {
             </Card>
           ))}
         </Box>
+      ) : (
+        <Typography sx={{ mt: 3 }}>No favorites found.</Typography>
       )}
 
       <Dialog open={openDialog} onClose={handleCancel}>
@@ -299,4 +246,4 @@ const TrendingNFTs = () => {
   );
 };
 
-export default TrendingNFTs;
+export default Favorites;

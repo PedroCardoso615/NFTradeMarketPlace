@@ -12,11 +12,16 @@ import {
   DialogTitle,
   TextField,
   Typography,
+  Paper,
+  Divider,
 } from "@mui/material";
-import NFToken from "../../images/NFToken.png"
+import NFToken from "../../images/NFToken.png";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
+  const [totalSales, setTotalSales] = useState(0);
+  const [totalRoyalties, setTotalRoyalties] = useState(0);
+  const [totalEarnings, setTotalEarnings] = useState(0);
   const [error, setError] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -27,7 +32,7 @@ const Profile = () => {
   });
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchUserData = async () => {
       try {
         const response = await fetch("http://localhost:5000/user/me", {
           method: "GET",
@@ -56,7 +61,33 @@ const Profile = () => {
       }
     };
 
-    fetchUser();
+    const fetchEarnings = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/nft/earnings", {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          setTotalSales(parseFloat(data.totalSales));
+          setTotalRoyalties(parseFloat(data.totalRoyalties));
+          setTotalEarnings(parseFloat(data.totalEarnings));
+        } else {
+          toast.error("Failed to fetch earnings");
+        }
+      } catch (error) {
+        console.error("Error fetching earnings:", error);
+        toast.error("Error fetching earnings.");
+      }
+    };
+
+    fetchUserData();
+    fetchEarnings();
   }, []);
 
   const handleInputChange = (e) => {
@@ -76,7 +107,10 @@ const Profile = () => {
       let imgUrl = user.profilePicture;
 
       if (formData.profilePicture instanceof File) {
-        const imageRef = ref(storage, `profilePictures/${formData.profilePicture.name}`);
+        const imageRef = ref(
+          storage,
+          `profilePictures/${formData.profilePicture.name}`
+        );
         await uploadBytes(imageRef, formData.profilePicture);
         imgUrl = await getDownloadURL(imageRef);
       }
@@ -114,24 +148,76 @@ const Profile = () => {
 
   return (
     <Box textAlign="center" mt={4}>
-      <Typography variant="h4">Welcome, {user.fullname}!</Typography>
-      <Avatar
-        src={user.profilePicture}
-        alt="Profile"
-        sx={{ width: 150, height: 150, margin: "auto", mt: 2 }}
-      />
-      <Typography variant="h6"><strong>Full Name:</strong> {user.fullname}</Typography>
-      <Typography variant="h6"><strong>Email:</strong> {user.email}</Typography>
-      
-      <Typography variant="h6" sx={{ display: 'flex', justifyContent: 'center' }}>
-        <strong>Balance:</strong>
-        <span style={{marginLeft: 8}}>{user.balance}</span>
-        <img src={NFToken} alt="NFTokens" style={{ width: 35, height: 35 }} />
+      <Typography variant="h4" sx={{ mb: 3 }}>
+        Welcome, {user.fullname}!
       </Typography>
 
-      <Button variant="contained" color="primary" onClick={() => setIsPopupOpen(true)} sx={{ mt: 2 }}>
-        Update Profile
-      </Button>
+      <Paper sx={{ padding: 3, maxWidth: 600, margin: "auto" }}>
+        <Avatar
+          src={user.profilePicture}
+          alt="Profile"
+          sx={{ width: 150, height: 150, margin: "auto", mb: 2 }}
+        />
+        <Typography variant="h6">
+          <strong>Full Name:</strong> {user.fullname}
+        </Typography>
+        <Typography variant="h6">
+          <strong>Email:</strong> {user.email}
+        </Typography>
+
+        <Typography
+          variant="h6"
+          sx={{ display: "flex", justifyContent: "center", mt: 2 }}
+        >
+          <strong>Balance:</strong>
+          <span style={{ marginLeft: 8 }}>{user.balance}</span>
+          <img src={NFToken} alt="NFTokens" style={{ width: 35, height: 35 }} />
+        </Typography>
+
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setIsPopupOpen(true)}
+          sx={{ mt: 3 }}
+        >
+          Update Profile
+        </Button>
+      </Paper>
+
+      <Divider sx={{ my: 4 }} />
+
+      <Box sx={{ maxWidth: 600, margin: "auto", padding: 2 }}>
+        <Typography variant="h5" sx={{ mb: 2 }}>
+          Earnings Overview
+        </Typography>
+
+        <Paper sx={{ padding: 2 }}>
+          <Typography
+            variant="h6"
+            sx={{ display: "flex", alignItems: "center",  mt: 2 }}
+          >
+            <strong>Earnings from Sales:</strong>
+            <span style={{marginLeft: 15}}>{totalSales.toFixed(2)}</span>
+            <img src={NFToken} alt="NFTokens" style={{ width: 35, height: 35 }} />
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{ display: "flex", alignItems: "center",  mt: 2 }}
+          >
+            <strong>Earnings from Royalties:</strong>
+            <span style={{marginLeft: 15}}>{totalRoyalties.toFixed(2)}</span>
+            <img src={NFToken} alt="NFTokens" style={{ width: 35, height: 35 }} />
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{ display: "flex", alignItems: "center",  mt: 2 }}
+          >
+            <strong>Total Earnings:</strong>
+            <span style={{marginLeft: 15}}>{totalEarnings.toFixed(2)}</span>
+            <img src={NFToken} alt="NFTokens" style={{ width: 35, height: 35 }} />
+          </Typography>
+        </Paper>
+      </Box>
 
       <Dialog open={isPopupOpen} onClose={() => setIsPopupOpen(false)}>
         <DialogTitle>Edit Profile</DialogTitle>
@@ -144,9 +230,20 @@ const Profile = () => {
             value={formData.fullname}
             onChange={handleInputChange}
           />
-          <Button variant="contained" component="label" fullWidth sx={{ mt: 2 }}>
+          <Button
+            variant="contained"
+            component="label"
+            fullWidth
+            sx={{ mt: 2 }}
+          >
             Upload Profile Picture
-            <input type="file" hidden name="profilePicture" accept="image/*" onChange={handleInputChange} />
+            <input
+              type="file"
+              hidden
+              name="profilePicture"
+              accept="image/*"
+              onChange={handleInputChange}
+            />
           </Button>
           <TextField
             fullWidth
@@ -168,8 +265,16 @@ const Profile = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleSubmit} variant="contained" color="success">Save Changes</Button>
-          <Button onClick={() => setIsPopupOpen(false)} variant="contained" color="error">Cancel</Button>
+          <Button onClick={handleSubmit} variant="contained" color="success">
+            Save Changes
+          </Button>
+          <Button
+            onClick={() => setIsPopupOpen(false)}
+            variant="contained"
+            color="error"
+          >
+            Cancel
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>

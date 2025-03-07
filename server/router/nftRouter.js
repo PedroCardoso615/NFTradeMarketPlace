@@ -195,10 +195,7 @@ nftRouter.post("/buy/:nftId", authenticateUser, async (req, res) => {
 
     const nft = await nftModel.findById(nftId)
     .populate("owner")
-    .populate({
-      path: "creator",
-      select: "fullname profilePicture"
-    })
+    .populate("creator")
     .session(session);
     if (!nft || !nft.listed) {
       throw new Error("NFT not found or not for sale");
@@ -210,6 +207,10 @@ nftRouter.post("/buy/:nftId", authenticateUser, async (req, res) => {
 
     if (!buyer || !seller || !creator) {
       throw new Error("User not found");
+    }
+
+    if (buyer._id.toString() === seller._id.toString()) {
+      throw new Error("You cannot buy your own NFT");
     }
 
     if (buyer.balance < nft.price) {
@@ -641,11 +642,13 @@ nftRouter.get("/earnings", authenticateUser, async (req, res, next) => {
 
     const totalRoyalties = royaltyEarnings.reduce((sum, txn) => sum + txn.royalties, 0);
 
+    const totalEarnings = totalSales + totalRoyalties;
+
     res.status(200).json({
       success: true,
-      totalSales,
-      totalRoyalties,
-      totalEarnings: totalSales + totalRoyalties,
+      totalSales: totalSales.toFixed(2),
+      totalRoyalties: totalRoyalties.toFixed(2),
+      totalEarnings: totalEarnings.toFixed(2),
     });
 
   } catch (error) {

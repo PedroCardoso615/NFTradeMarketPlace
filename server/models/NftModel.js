@@ -14,7 +14,7 @@ const NftSchema = new Schema({
         type: Number,
         required: true,
         min: 0.01,
-        max: 100
+        max: 10000
     },
     image: {
         type: String,

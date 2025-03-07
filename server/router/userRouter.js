@@ -137,6 +137,31 @@ userRouter.put("/update", authenticateUser, async (req, res, next) => {
   }
 });
 
+{/*LoggedIn User Favorite NFT's*/}
+userRouter.get("/favorites", authenticateUser, async (req, res, next) => {
+  try {
+    const user = await userModel.findById(req.user._id).populate("favorites");
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      favorites: user.favorites,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch favorites",
+    });
+  }
+});
+
 {/*Send Pasword Reset Via Email*/}
 userRouter.post("/forgot-password", async (req, res) => {
   const { email } = req.body;

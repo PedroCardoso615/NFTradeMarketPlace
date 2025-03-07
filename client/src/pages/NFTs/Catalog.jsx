@@ -67,6 +67,28 @@ const Catalog = () => {
     fetchNFTs();
   }, [filters]);
 
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/user/favorites", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+        const data = await res.json();
+        if (data.success) {
+          setLikedNfts(data.favorites.map((fav) => fav._id));
+        }
+      } catch (error) {
+        console.error("Error fetching favorites:", error);
+      }
+    };
+
+    fetchFavorites();
+  }, []);
+
   const debouncedHandleFilterChange = debounce((e) => {
     setFilters((prev) => ({
       ...prev,
@@ -130,13 +152,16 @@ const Catalog = () => {
 
   const handleBuy = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/nft/buy/${selectedNft._id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
+      const res = await fetch(
+        `http://localhost:5000/nft/buy/${selectedNft._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
 
       const data = await res.json();
 
@@ -144,7 +169,9 @@ const Catalog = () => {
         toast.success("NFT purchased successfully!");
         setNfts((prev) =>
           prev.map((nft) =>
-            nft._id === selectedNft._id ? { ...nft, owner: { fullname: "You" } } : nft
+            nft._id === selectedNft._id
+              ? { ...nft, owner: { fullname: "You" } }
+              : nft
           )
         );
       } else {
@@ -272,15 +299,25 @@ const Catalog = () => {
                     style={{ width: 35, height: 35 }}
                   />
                 </Typography>
-                <Typography variant="body2">Owner: {nft.owner?.fullname}</Typography>
-                <Typography variant="body2">Creator: {nft.creator?.fullname}</Typography>
+                <Typography variant="body2">
+                  Owner: {nft.owner?.fullname}
+                </Typography>
+                <Typography variant="body2">
+                  Creator: {nft.creator?.fullname}
+                </Typography>
                 <Typography variant="body2">Royalty: {nft.royalty}%</Typography>
 
-                <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
+                <Box
+                  sx={{
+                    mt: 2,
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
                   <IconButton
                     onClick={() => handleLike(nft._id)}
                     sx={{
-                      color: likedNfts.includes(nft._id) ? "red" : "gray"
+                      color: likedNfts.includes(nft._id) ? "red" : "gray",
                     }}
                   >
                     {likedNfts.includes(nft._id) ? (
@@ -291,7 +328,7 @@ const Catalog = () => {
                   </IconButton>
                   <Button
                     onClick={() => handleBuyClick(nft)}
-                    variant="contained"
+                    variant="outlined"
                     color="primary"
                     startIcon={<ShoppingCartIcon />}
                   >
@@ -307,46 +344,38 @@ const Catalog = () => {
       )}
 
       <Dialog open={openDialog} onClose={handleCancel}>
-        <DialogTitle>Confirm Purchase</DialogTitle>
+        <DialogTitle>Buy NFT</DialogTitle>
         <DialogContent>
-          {selectedNft && (
-            <Box sx={{ minWidth: 400 }}>
-              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                {selectedNft.NFTName}
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <img
+              src={selectedNft?.image}
+              alt={selectedNft?.NFTName}
+              style={{ width: "100px", height: "100px", objectFit: "cover" }}
+            />
+            <Box>
+              <Typography variant="h6">{selectedNft?.NFTName}</Typography>
+              <Typography variant="body2">
+                {selectedNft?.description}
               </Typography>
-              <Typography sx={{ mb: 1, color: "textSecondary" }}>
-                {selectedNft.description}
+              <Divider sx={{ my: 1 }} />
+              <Typography
+                variant="body1"
+                sx={{ display: "flex", alignItems: "center" }}
+              >
+                <strong>Price:</strong> {selectedNft?.price}{" "}
+                <img
+                  src={NFToken}
+                  alt="NFToken"
+                  style={{ width: 30, height: 30 }}
+                />
               </Typography>
-
-              <Divider sx={{ my: 2 }} />
-
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="body1" sx={{display:"flex", alignItems:"center"}}>
-                  <strong>Price:</strong> {selectedNft.price}{" "}
-                  <img src={NFToken} alt="NFToken" style={{ width: 20 }} />
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Owner:</strong> {selectedNft.owner.fullname}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Creator:</strong> {selectedNft.creator.fullname}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Royalty:</strong> {selectedNft.royalty}%
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Created on:</strong> {new Date(selectedNft.createdAt).toLocaleDateString()}
-                </Typography>
-              </Box>
             </Box>
-          )}
+          </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancel} sx={{color: "red"}}>
-            Cancel
-          </Button>
+          <Button onClick={handleCancel}>Cancel</Button>
           <Button onClick={handleBuy} color="primary">
-            Confirm Purchase
+            Buy
           </Button>
         </DialogActions>
       </Dialog>

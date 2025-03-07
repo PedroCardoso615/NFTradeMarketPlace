@@ -213,7 +213,7 @@ const Navbar = () => {
         justifyContent: "space-between",
         alignItems: "center",
         width: "100%",
-        padding: "8px 16px", // Optional for spacing
+        padding: "8px 16px",
       }}
     >
       <Typography variant="body2" sx={{ fontWeight: "bold", color: "text.primary" }}>
@@ -224,10 +224,10 @@ const Navbar = () => {
         size="small"
         onClick={handleNotificationsRead}
         sx={{
-          width: "auto",           // Adjust the width for the button
-          borderRadius: "20px",    // Increase border radius
-          padding: "4px 16px",     // Adjust padding for a smaller button
-          textTransform: "none",   // Prevent text from being capitalized
+          width: "auto",
+          borderRadius: "20px",
+          padding: "4px 16px",
+          textTransform: "none",
         }}
       >
         Mark all as read
@@ -270,6 +270,9 @@ const Navbar = () => {
                 </MenuItem>
                 <MenuItem component={Link} to="/daily-rewards">
                   Daily Rewards
+                </MenuItem>
+                <MenuItem component={Link} to="/transactions">
+                  Transaction History
                 </MenuItem>
                 <Divider />
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>

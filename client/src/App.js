@@ -10,7 +10,8 @@ import {
   Catalog,
   TrendingNFTs,
   TopCreators,
-  UserCollection
+  UserCollection,
+  Favorites
 } from "./pages/exportComponents";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -31,6 +32,7 @@ function App() {
         <Route path="/trending" element={<TrendingNFTs />}/>
         <Route path="/top-creators" element={<TopCreators />}/>
         <Route path="/my-collection" element={<UserCollection />}/>
+        <Route path="/favorites" element={<Favorites />}/>
       </Routes>
     </Router>
   );
