@@ -110,7 +110,7 @@ const UserCollection = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4">My NFT Collection</Typography>
+      <Typography variant="h4">NFT Collection</Typography>
 
       <Box
         sx={{
@@ -176,7 +176,7 @@ const UserCollection = () => {
                       color="primary"
                       onClick={() => handleResell(nft._id)}
                     >
-                      Re-sell NFT
+                      List NFT
                     </Button>
                   )}
                 </Box>

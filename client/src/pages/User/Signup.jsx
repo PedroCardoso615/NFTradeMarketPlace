@@ -1,9 +1,10 @@
 import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { storage } from "../../config/firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { toast } from "react-toastify";
 import { Container, TextField, Button, Typography, Box } from "@mui/material";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 const Signup = () => {
   const [fullname, setFullname] = useState("");
@@ -35,7 +36,9 @@ const Signup = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/user/check-email?email=${email}`);
+      const response = await fetch(
+        `http://localhost:5000/user/check-email?email=${email}`
+      );
       const data = await response.json();
 
       if (data.exists) {
@@ -159,11 +162,7 @@ const Signup = () => {
           required
         />
 
-        <Button
-          variant="contained"
-          component="label"
-          sx={{ mt: 2, mb: 2 }}
-        >
+        <Button variant="contained" component="label" sx={{ mt: 2, mb: 2 }}>
           Upload Profile Picture
           <input
             type="file"
@@ -183,6 +182,23 @@ const Signup = () => {
         >
           Sign Up
         </Button>
+        <Typography variant="body2" sx={{ mt: 2 }}>
+          <Link
+            to="/login"
+            style={{
+              color: "#1976d2",
+              textDecoration: "none",
+              display: "flex",
+              alignItems: "center",
+              transition: "color 0.3s",
+            }}
+            onMouseEnter={(e) => (e.target.style.color = "#1565c0")}
+            onMouseLeave={(e) => (e.target.style.color = "#1976d2")}
+          >
+            Already have an account
+            <ArrowForwardIcon sx={{ ml: 1 }} />
+          </Link>
+        </Typography>
       </Box>
     </Container>
   );

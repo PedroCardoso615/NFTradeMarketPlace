@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
+  Typography,
   IconButton,
   Menu,
   MenuItem,
@@ -195,35 +196,52 @@ const Navbar = () => {
             </Badge>
           </IconButton>
           <Menu
-            anchorEl={notificationMenu}
-            open={Boolean(notificationMenu)}
-            onClose={() => setNotificationMenu(null)}
-            sx={{ maxHeight: 300, overflowY: "auto" }}
-          >
-            {notificationLoading ? (
-              <MenuItem>
-                <CircularProgress size={24} />
-              </MenuItem>
-            ) : userNotifications.length > 0 ? (
-              [
-                ...userNotifications
-                
-                  .map((noti) => (
-                    <MenuItem key={noti._id}>{noti.message}</MenuItem>
-                  )),
-                <Divider key="divider" />,
-                <MenuItem
-                  key="mark-all"
-                  onClick={handleNotificationsRead}
-                  sx={{ fontWeight: "bold", textAlign: "center" }}
-                >
-                  Mark all as read
-                </MenuItem>,
-              ]
-            ) : (
-              <MenuItem>No notifications</MenuItem>
-            )}
-          </Menu>
+  anchorEl={notificationMenu}
+  open={Boolean(notificationMenu)}
+  onClose={() => setNotificationMenu(null)}
+  sx={{ maxHeight: 300, overflowY: "auto" }}
+>
+{notificationLoading ? (
+  <MenuItem>
+    <CircularProgress size={24} />
+  </MenuItem>
+) : userNotifications.length > 0 ? (
+  <>
+    <MenuItem
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        width: "100%",
+        padding: "8px 16px", // Optional for spacing
+      }}
+    >
+      <Typography variant="body2" sx={{ fontWeight: "bold", color: "text.primary" }}>
+        Notifications
+      </Typography>
+      <Button
+        variant="contained"
+        size="small"
+        onClick={handleNotificationsRead}
+        sx={{
+          width: "auto",           // Adjust the width for the button
+          borderRadius: "20px",    // Increase border radius
+          padding: "4px 16px",     // Adjust padding for a smaller button
+          textTransform: "none",   // Prevent text from being capitalized
+        }}
+      >
+        Mark all as read
+      </Button>
+    </MenuItem>
+    {userNotifications.map((noti) => (
+      <MenuItem key={noti._id}>{noti.message}</MenuItem>
+    ))}
+  </>
+) : (
+  <MenuItem>No notifications</MenuItem>
+)}
+</Menu>
+
 
           {currentUser ? (
             <>

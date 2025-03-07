@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Container, TextField, Button, Typography, Box } from "@mui/material";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -24,11 +25,13 @@ const Login = () => {
       if (data.success) {
         toast.success("Login Successful!", { position: "top-right" });
         setTimeout(() => {
-          navigate("/profile")
+          navigate("/profile");
           window.location.reload();
         }, 1500);
       } else {
-        toast.error("Email or password is incorrect", { position: "top-right" });
+        toast.error("Email or password is incorrect", {
+          position: "top-right",
+        });
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -74,14 +77,47 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ mt: 2 }}
+          >
             Login
           </Button>
         </form>
 
         <Typography variant="body2" sx={{ mt: 2 }}>
-          <Link to="/forgot-password" style={{ color: "#1976d2", textDecoration: "none" }}>
+          <Link
+            to="/forgot-password"
+            style={{
+              color: "#1976d2",
+              textDecoration: "none",
+              transition: "color 0.3s",
+            }}
+            onMouseEnter={(e) => (e.target.style.color = "#1565c0")}
+            onMouseLeave={(e) => (e.target.style.color = "#1976d2")}
+          >
             Forgot Password?
+          </Link>
+        </Typography>
+
+        <Typography variant="body2" sx={{ mt: 2 }}>
+          <Link
+            to="/signup"
+            style={{
+              color: "#1976d2",
+              textDecoration: "none",
+              display: "flex",
+              alignItems: "center",
+              transition: "color 0.3s",
+            }}
+            onMouseEnter={(e) => (e.target.style.color = "#1565c0")}
+            onMouseLeave={(e) => (e.target.style.color = "#1976d2")}
+          >
+            Create an Account
+            <ArrowForwardIcon sx={{ ml: 1 }} />
           </Link>
         </Typography>
       </Box>
