@@ -207,7 +207,7 @@ const Navbar = () => {
             ) : userNotifications.length > 0 ? (
               [
                 ...userNotifications
-                  .slice(0, 5)
+                
                   .map((noti) => (
                     <MenuItem key={noti._id}>{noti.message}</MenuItem>
                   )),
