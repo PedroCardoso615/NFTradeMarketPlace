@@ -187,7 +187,7 @@ const TrendingNFTs = () => {
                 },
                 background:
                   index === 0
-                    ? "linear-gradient(135deg, #FFC107 30%,rgb(221, 189, 10) 60%, #FFF5CC 100%)"
+                    ? "linear-gradient(135deg, #FFC107 30%,rgb(240, 209, 33) 60%, #FFF5CC 100%)"
                     : index === 1
                     ? "linear-gradient(135deg,rgb(95, 103, 112) 30%, #C0C0C0 60%, #E8E8E8 100%)"
                     : index === 2
@@ -226,7 +226,7 @@ const TrendingNFTs = () => {
               />
               <CardContent>
                 <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                  #{index + 1} - {nft.NFTName}
+                  {index + 1}º - {nft.NFTName}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
                   {nft.description}
@@ -275,7 +275,7 @@ const TrendingNFTs = () => {
                   <Button
                     onClick={() => handleBuyClick(nft)}
                     variant="outlined"
-                    color="primary"
+                    color=""
                     startIcon={<ShoppingCartIcon />}
                   >
                     Buy
