@@ -351,7 +351,7 @@ const Catalog = () => {
             <img
               src={selectedNft?.image}
               alt={selectedNft?.NFTName}
-              style={{ width: "100px", height: "100px", objectFit: "cover" }}
+              style={{ width: "200px", height: "200px", objectFit: "cover" }}
             />
             <Box>
               <Typography variant="h6">{selectedNft?.NFTName}</Typography>

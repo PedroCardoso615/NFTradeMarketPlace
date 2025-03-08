@@ -18,6 +18,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "../images/LogoNoBG.png";
+import NFToken from "../images/NFToken.png";
 
 const Navbar = () => {
   const [menuAnchor, setMenuAnchor] = useState({
@@ -196,52 +197,54 @@ const Navbar = () => {
             </Badge>
           </IconButton>
           <Menu
-  anchorEl={notificationMenu}
-  open={Boolean(notificationMenu)}
-  onClose={() => setNotificationMenu(null)}
-  sx={{ maxHeight: 300, overflowY: "auto" }}
->
-{notificationLoading ? (
-  <MenuItem>
-    <CircularProgress size={24} />
-  </MenuItem>
-) : userNotifications.length > 0 ? (
-  <>
-    <MenuItem
-      sx={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        width: "100%",
-        padding: "8px 16px",
-      }}
-    >
-      <Typography variant="body2" sx={{ fontWeight: "bold", color: "text.primary" }}>
-        Notifications
-      </Typography>
-      <Button
-        variant="contained"
-        size="small"
-        onClick={handleNotificationsRead}
-        sx={{
-          width: "auto",
-          borderRadius: "20px",
-          padding: "4px 16px",
-          textTransform: "none",
-        }}
-      >
-        Mark all as read
-      </Button>
-    </MenuItem>
-    {userNotifications.map((noti) => (
-      <MenuItem key={noti._id}>{noti.message}</MenuItem>
-    ))}
-  </>
-) : (
-  <MenuItem>No notifications</MenuItem>
-)}
-</Menu>
-
+            anchorEl={notificationMenu}
+            open={Boolean(notificationMenu)}
+            onClose={() => setNotificationMenu(null)}
+            sx={{ maxHeight: 300, overflowY: "auto" }}
+          >
+            {notificationLoading ? (
+              <MenuItem>
+                <CircularProgress size={24} />
+              </MenuItem>
+            ) : userNotifications.length > 0 ? (
+              <>
+                <MenuItem
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    width: "100%",
+                    padding: "8px 16px",
+                  }}
+                >
+                  <Typography
+                    variant="body2"
+                    sx={{ fontWeight: "bold", color: "text.primary" }}
+                  >
+                    Notifications
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={handleNotificationsRead}
+                    sx={{
+                      width: "auto",
+                      borderRadius: "20px",
+                      padding: "4px 16px",
+                      textTransform: "none",
+                    }}
+                  >
+                    Mark all as read
+                  </Button>
+                </MenuItem>
+                {userNotifications.map((noti) => (
+                  <MenuItem key={noti._id}>{noti.message}</MenuItem>
+                ))}
+              </>
+            ) : (
+              <MenuItem>No notifications</MenuItem>
+            )}
+          </Menu>
 
           {currentUser ? (
             <>
@@ -259,6 +262,35 @@ const Navbar = () => {
                 open={Boolean(profileMenu)}
                 onClose={() => setProfileMenu(null)}
               >
+                <MenuItem
+                  sx={{
+                    justifyContent: "center",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    bgcolor: "#f5f5f5",
+                    borderRadius: "8px",
+                    p: 1,
+                    mx: 1.5,
+                    my: 1,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography variant="body1" fontWeight="bold">
+                      Balance: {currentUser.balance}
+                    </Typography>
+                    <img
+                      src={NFToken}
+                      alt="NFToken"
+                      style={{ width: 35, height: 35 }}
+                    />
+                  </Box>
+                </MenuItem>
                 <MenuItem component={Link} to="/profile">
                   Profile
                 </MenuItem>
