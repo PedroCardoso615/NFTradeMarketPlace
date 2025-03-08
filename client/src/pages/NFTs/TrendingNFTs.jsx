@@ -178,17 +178,43 @@ const TrendingNFTs = () => {
             <Card
               key={nft._id}
               sx={{
-                border:
+                position: "relative",
+                borderRadius: "12px",
+                transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                "&:hover": {
+                  transform: "scale(1.05)",
+                  boxShadow: "0px 4px 20px rgba(0,0,0,0.2)",
+                },
+                background:
                   index === 0
-                    ? "3px solid gold"
+                    ? "linear-gradient(135deg, #FFC107 30%,rgb(221, 189, 10) 60%, #FFF5CC 100%)"
                     : index === 1
-                    ? "3px solid silver"
+                    ? "linear-gradient(135deg,rgb(95, 103, 112) 30%, #C0C0C0 60%, #E8E8E8 100%)"
                     : index === 2
-                    ? "3px solid #cd7f32"
+                    ? "linear-gradient(135deg,rgb(179, 90, 2) 30%, #B87333 60%, #E3A869 100%)"
                     : "none",
-                borderRadius: "8px",
-                transition: "transform 0.3s ease",
-                "&:hover": { transform: "scale(1.05)" },
+                padding: "4px",
+                "&::before":
+                  index < 3
+                    ? {
+                        content: '""',
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        zIndex: -1,
+                        borderRadius: "inherit",
+                        background:
+                          index === 0
+                            ? "linear-gradient(135deg, #FFC107 30%,rgb(233, 200, 13) 60%, #FFF5CC 100%)"
+                            : index === 1
+                            ? "linear-gradient(135deg,rgb(114, 124, 138) 30%, #C0C0C0 60%, #E8E8E8 100%)"
+                            : index === 2
+                            ? "linear-gradient(135deg, #CD7F32 30%, #B87333 60%, #E3A869 100%)"
+                            : "none",
+                      }
+                    : {},
               }}
             >
               <CardMedia
@@ -196,6 +222,7 @@ const TrendingNFTs = () => {
                 height="300"
                 image={nft.image}
                 alt={nft.NFTName}
+                sx={{borderRadius: "12px"}}
               />
               <CardContent>
                 <Typography variant="h6" sx={{ fontWeight: "bold" }}>
@@ -283,7 +310,7 @@ const TrendingNFTs = () => {
                 <img
                   src={NFToken}
                   alt="NFToken"
-                  style={{ width: 30, height: 30 }}
+                  style={{ width: 30, height: 30}}
                 />
               </Typography>
             </Box>
