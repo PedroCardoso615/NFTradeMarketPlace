@@ -50,7 +50,7 @@ nftRouter.post("/create", authenticateUser, async (req, res, next) => {
 
 {/*Update NFT and Notify Following Users*/}
 nftRouter.put("/update/:nftId", authenticateUser, async (req, res, next) => {
-  const { NFTName, description, price, image } = req.body;
+  const { NFTName, description, price } = req.body;
   const { nftId } = req.params;
 
   try {
@@ -66,12 +66,11 @@ nftRouter.put("/update/:nftId", authenticateUser, async (req, res, next) => {
     const isCreator = nft.creator.toString() === req.user._id.toString();
     const isOwner = nft.owner.toString() === req.user._id.toString();
 
-    if (isCreator) {
+    if (isCreator && isOwner) {
       nft.NFTName = NFTName || nft.NFTName;
       nft.description = description || nft.description;
       nft.price = price || nft.price;
-      nft.image = image || nft.image;
-    } else if (isOwner) {
+    } else if (!isCreator && isOwner) {
       nft.price = price || nft.price;
     } else {
       return res.status(403).json({

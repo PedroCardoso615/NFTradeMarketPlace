@@ -7,6 +7,8 @@ import {
   CardMedia,
   CardContent,
   Button,
+  Modal,
+  TextField,
 } from "@mui/material";
 import NFToken from "../../images/NFToken.png";
 import { toast } from "react-toastify";
@@ -15,6 +17,42 @@ const UserCollection = () => {
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedNft, setSelectedNft] = useState(null);
+  const [updatedData, setUpdatedData] = useState({
+    NFTName: "",
+    description: "",
+    price: 0,
+    image: "",
+  });
+  const [isCreator, setIsCreator] = useState(false);
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/user/me", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          setUserId(data.user._id);
+        } else {
+          toast.error("Failed to fetch user profile");
+        }
+      } catch (error) {
+        toast.error("Error fetching user profile");
+        console.error(error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   useEffect(() => {
     const fetchUserNFTs = async () => {
@@ -48,6 +86,62 @@ const UserCollection = () => {
 
     fetchUserNFTs();
   }, []);
+
+  const handleUpdateClick = (nft) => {
+    setSelectedNft(nft);
+    setUpdatedData({
+      NFTName: nft.NFTName,
+      description: nft.description,
+      price: nft.price,
+      image: nft.image,
+    });
+
+    if (userId === nft.creator) {
+      setIsCreator(true);
+    } else {
+      setIsCreator(false);
+    }
+
+    setOpenModal(true);
+  };
+
+  const handleUpdate = async () => {
+    try {
+      const res = await fetch(`http://localhost:5000/nft/update/${selectedNft._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedData),
+        credentials: "include",
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setNfts((prevNfts) =>
+          prevNfts.map((nft) =>
+            nft._id === selectedNft._id ? { ...nft, ...updatedData } : nft
+          )
+        );
+        toast.success("NFT updated successfully");
+        setOpenModal(false);
+      } else {
+        toast.error("Failed to update NFT");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Error updating NFT");
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUpdatedData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   const handleResell = async (nftId) => {
     try {
@@ -121,9 +215,7 @@ const UserCollection = () => {
         }}
       >
         {nfts.length === 0 ? (
-          <Typography sx={{ mt: 3 }}>
-            No NFTs found in your collection.
-          </Typography>
+          <Typography sx={{ mt: 3 }}>No NFTs found in your collection.</Typography>
         ) : (
           nfts.map((nft) => (
             <Card
@@ -179,12 +271,67 @@ const UserCollection = () => {
                       List NFT
                     </Button>
                   )}
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => handleUpdateClick(nft)}
+                  >
+                    Update
+                  </Button>
                 </Box>
               </CardContent>
             </Card>
           ))
         )}
       </Box>
+
+      <Modal
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        aria-labelledby="update-nft-modal"
+        aria-describedby="modal-to-update-nft-details"
+      >
+        <Box sx={{ maxWidth: 400, margin: "auto", mt: 25, p: 3, bgcolor: "white", borderRadius: 2 }}>
+          <Typography variant="h6" gutterBottom>
+            Update NFT
+          </Typography>
+          <TextField
+            fullWidth
+            label="NFT Name"
+            name="NFTName"
+            value={updatedData.NFTName}
+            onChange={handleInputChange}
+            sx={{ mb: 2 }}
+            disabled={!isCreator}
+          />
+          <TextField
+            fullWidth
+            label="Description"
+            name="description"
+            value={updatedData.description}
+            onChange={handleInputChange}
+            sx={{ mb: 2 }}
+            disabled={!isCreator}
+          />
+          <TextField
+            fullWidth
+            label="Price"
+            type="number"
+            name="price"
+            value={updatedData.price}
+            onChange={handleInputChange}
+            sx={{ mb: 2 }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleUpdate}
+            fullWidth
+          >
+            Update NFT
+          </Button>
+        </Box>
+      </Modal>
     </Box>
   );
 };
