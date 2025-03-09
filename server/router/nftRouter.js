@@ -14,13 +14,6 @@ nftRouter.post("/create", authenticateUser, async (req, res, next) => {
   let { NFTName, description, price, image, royalty } = req.body; //Needs to be 'let' instead of 'const' to allow the reassignment of 'royalty'(Line 16).
 
   try {
-    if (!image || typeof image !== "string" || !/\.(jpg|jpeg|png)$/i.test(image)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid image format. Must be an image file (.jpg, .jpeg or .png).",
-      });
-    }
-
     royalty = Number(royalty);
     if (isNaN(royalty) || royalty < 0 || royalty > 20) {
       return res.status(400).json({

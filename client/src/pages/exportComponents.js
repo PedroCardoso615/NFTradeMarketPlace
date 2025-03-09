@@ -10,6 +10,7 @@ import TrendingNFTs from "./NFTs/TrendingNFTs";
 import TopCreators from "./NFTs/TopCreators";
 import UserCollection from "./User/UserCollection";
 import Favorites from "./User/Favorites";
+import NFTCreation from "./NFTs/NFTCreation";
 
 export {
   Navbar,
@@ -23,5 +24,6 @@ export {
   TrendingNFTs,
   TopCreators,
   UserCollection,
-  Favorites
+  Favorites,
+  NFTCreation
 };
