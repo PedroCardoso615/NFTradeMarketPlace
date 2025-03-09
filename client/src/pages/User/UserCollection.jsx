@@ -107,14 +107,17 @@ const UserCollection = () => {
 
   const handleUpdate = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/nft/update/${selectedNft._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedData),
-        credentials: "include",
-      });
+      const res = await fetch(
+        `http://localhost:5000/nft/update/${selectedNft._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedData),
+          credentials: "include",
+        }
+      );
 
       const data = await res.json();
 
@@ -215,7 +218,9 @@ const UserCollection = () => {
         }}
       >
         {nfts.length === 0 ? (
-          <Typography sx={{ mt: 3 }}>No NFTs found in your collection.</Typography>
+          <Typography sx={{ mt: 3 }}>
+            No NFTs found in your collection.
+          </Typography>
         ) : (
           nfts.map((nft) => (
             <Card
@@ -245,7 +250,11 @@ const UserCollection = () => {
                   sx={{ display: "flex", alignItems: "center" }}
                 >
                   {nft.price}
-                  <img src={NFToken} alt="NFToken" style={{ width: 20 }} />
+                  <img
+                    src={NFToken}
+                    alt="NFToken"
+                    style={{ width: 35, height: 35 }}
+                  />
                 </Typography>
                 <Typography variant="body2">Royalty: {nft.royalty}%</Typography>
                 <Typography variant="body2">
@@ -291,7 +300,16 @@ const UserCollection = () => {
         aria-labelledby="update-nft-modal"
         aria-describedby="modal-to-update-nft-details"
       >
-        <Box sx={{ maxWidth: 400, margin: "auto", mt: 25, p: 3, bgcolor: "white", borderRadius: 2 }}>
+        <Box
+          sx={{
+            maxWidth: 400,
+            margin: "auto",
+            mt: 25,
+            p: 3,
+            bgcolor: "white",
+            borderRadius: 2,
+          }}
+        >
           <Typography variant="h6" gutterBottom>
             Update NFT
           </Typography>
