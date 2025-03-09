@@ -115,7 +115,7 @@ const Navbar = () => {
   }
 
   return (
-    <AppBar position="static" sx={{ bgcolor: "#545454", p: 1 }}>
+    <AppBar position="static" sx={{ bgcolor: "#333333", p: 1 }}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Link to="/">
