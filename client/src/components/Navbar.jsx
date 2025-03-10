@@ -207,8 +207,9 @@ const Navbar = () => {
                 <CircularProgress size={24} />
               </MenuItem>
             ) : userNotifications.length > 0 ? (
-              <>
+              [
                 <MenuItem
+                  key="header"
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
@@ -236,11 +237,11 @@ const Navbar = () => {
                   >
                     Mark all as read
                   </Button>
-                </MenuItem>
-                {userNotifications.map((noti) => (
+                </MenuItem>,
+                ...userNotifications.map((noti) => (
                   <MenuItem key={noti._id}>{noti.message}</MenuItem>
-                ))}
-              </>
+                )),
+              ]
             ) : (
               <MenuItem>No notifications</MenuItem>
             )}
