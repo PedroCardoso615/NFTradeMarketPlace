@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Button, Card, CardContent, Typography, CircularProgress } from "@mui/material";
+import {
+  Button,
+  Card,
+  CardContent,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
 import { toast } from "react-toastify";
+import NFToken from "../../images/NFToken.png";
 
 const DailyReward = () => {
   const [balance, setBalance] = useState(0);
@@ -56,9 +63,9 @@ const DailyReward = () => {
         },
         credentials: "include",
       });
-  
+
       const data = await res.json();
-  
+
       if (data.success) {
         toast.success(data.message || "You claimed 0.25 NFTokens!");
         setBalance(data.balance || 0);
@@ -71,8 +78,8 @@ const DailyReward = () => {
       toast.error("An error occurred while claiming reward.");
     }
     setLoading(false);
-};
-  
+  };
+
   useEffect(() => {
     if (remainingTime !== null) {
       const interval = setInterval(() => {
@@ -98,10 +105,14 @@ const DailyReward = () => {
           🎁 Daily Rewards
         </Typography>
 
-        <Typography variant="body1">
-          Current Balance: {balance} NFTokens
+        <Typography variant="body1" sx={{display: "flex", alignItems: "center", justifyContent: "center"}}>
+          Current Balance: {balance}{" "}
+          <img src={NFToken} alt="NFToken" style={{ width: 35, height: 35 }} />
         </Typography>
-        <Typography variant="body1">You will receive: 0.25 NFTokens</Typography>
+        <Typography variant="body1" sx={{display: "flex", alignItems: "center", justifyContent: "center"}}>
+          You will receive: 0.25{" "}
+          <img src={NFToken} alt="NFToken" style={{ width: 35, height: 35 }} />
+        </Typography>
 
         <Button
           variant="contained"
