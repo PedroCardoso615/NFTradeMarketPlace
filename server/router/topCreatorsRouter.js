@@ -14,7 +14,7 @@ creatorsRouter.get("/:timeFrame", async (req, res) => {
     const topCreators = await getTopCreators(timeFrame);
 
     if (topCreators.length === 0) {
-      return res.status(404).json("No creators found");
+      return res.status(200).json([]);
     }
 
     res.json(topCreators);

@@ -18,7 +18,7 @@ const TopCreators = () => {
       if (res.ok) {
         setTopCreators(data);
       } else {
-        toast.error(data.message || "Failed to fetch creators.");
+        console.error(data.message || "Failed to fetch creators.");
       }
     } catch (error) {
       console.error("Error fetching top creators:", error);

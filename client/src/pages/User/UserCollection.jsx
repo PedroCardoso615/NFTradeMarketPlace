@@ -203,7 +203,7 @@ const UserCollection = () => {
   };
 
   if (loading) return <CircularProgress sx={{ mt: 3 }} />;
-  if (error) return <Typography color="error">{error}</Typography>;
+  if (error) return <Typography variant="h6" color="textSecondary">{error}</Typography>;
 
   return (
     <Box sx={{ p: 3 }}>
