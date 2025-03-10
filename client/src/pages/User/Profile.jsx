@@ -265,12 +265,12 @@ const Profile = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleSubmit} variant="contained" color="success">
+          <Button onClick={handleSubmit} variant="contained" color="primary">
             Save Changes
           </Button>
           <Button
             onClick={() => setIsPopupOpen(false)}
-            variant="contained"
+            variant="outlined"
             color="error"
           >
             Cancel

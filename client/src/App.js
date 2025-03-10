@@ -12,7 +12,8 @@ import {
   TopCreators,
   UserCollection,
   Favorites,
-  NFTCreation
+  NFTCreation,
+  DailyRewards
 } from "./pages/exportComponents";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -35,6 +36,7 @@ function App() {
         <Route path="/my-collection" element={<UserCollection />}/>
         <Route path="/favorites" element={<Favorites />}/>
         <Route path="/create" element={<NFTCreation />}/>
+        <Route path="/daily-rewards" element={<DailyRewards />}/>
       </Routes>
     </Router>
   );

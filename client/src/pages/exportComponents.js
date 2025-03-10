@@ -11,6 +11,7 @@ import TopCreators from "./NFTs/TopCreators";
 import UserCollection from "./User/UserCollection";
 import Favorites from "./User/Favorites";
 import NFTCreation from "./NFTs/NFTCreation";
+import DailyRewards from "./User/DailyReward";
 
 export {
   Navbar,
@@ -25,5 +26,6 @@ export {
   TopCreators,
   UserCollection,
   Favorites,
-  NFTCreation
+  NFTCreation,
+  DailyRewards
 };
