@@ -12,6 +12,7 @@ import UserCollection from "./User/UserCollection";
 import Favorites from "./User/Favorites";
 import NFTCreation from "./NFTs/NFTCreation";
 import DailyRewards from "./User/DailyReward";
+import TransactionHistory from "./User/TransactionHistory";
 
 export {
   Navbar,
@@ -27,5 +28,6 @@ export {
   UserCollection,
   Favorites,
   NFTCreation,
-  DailyRewards
+  DailyRewards,
+  TransactionHistory
 };
