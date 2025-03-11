@@ -72,7 +72,7 @@ const TransactionHistory = () => {
   if (error) {
     return (
       <Container>
-        <Typography variant="h5" color="error" align="center">
+        <Typography variant="h6" color="textSecondary" align="center">
           {error}
         </Typography>
       </Container>
