@@ -41,17 +41,13 @@ userRouter.post("/login", async (req, res, next) => {
 
     const { user, accessToken } = await login({ email, password });
 
-    res.setHeader("Access-Control-Allow-Origin", "https://nftrade-marketplace.vercel.app");
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-
     res
       .cookie("accessToken", accessToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "None",
+        sameSite: "Strict",
         maxAge: 30 * 60 * 1000,
       })
-      .status(200)
       .json({
         success: true,
         user,
@@ -294,7 +290,7 @@ userRouter.post("/contact", authenticateUser, async (req, res) => {
 
     await sendEmail(
       process.env.GMAIL_USER,
-      `NFTrade Contact Request: ${subject}`,
+      `New NFTrade Contact Request: ${subject}`,
       emailContent
     );
 
