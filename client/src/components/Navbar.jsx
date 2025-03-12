@@ -38,7 +38,7 @@ const Navbar = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch("https://nftrade-marketplace.vercel.app/user/me", {
+        const response = await fetch("http://localhost:5000/user/me", {
           credentials: "include",
         });
         const data = await response.json();
@@ -56,7 +56,7 @@ const Navbar = () => {
     if (currentUser) {
       const fetchNotifications = async () => {
         try {
-          const response = await fetch("https://nftrade-marketplace.vercel.app/notification", {
+          const response = await fetch("http://localhost:5000/notification", {
             credentials: "include",
           });
           const data = await response.json();
@@ -73,7 +73,7 @@ const Navbar = () => {
 
   const handleNotificationsRead = async () => {
     try {
-      await fetch("https://nftrade-marketplace.vercel.app/notification/read", {
+      await fetch("http://localhost:5000/notification/read", {
         method: "PUT",
         credentials: "include",
       });
@@ -89,7 +89,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch("https://nftrade-marketplace.vercel.app/user/logout", {
+      await fetch("http://localhost:5000/user/logout", {
         method: "POST",
         credentials: "include",
       });
@@ -117,13 +117,13 @@ const Navbar = () => {
   return (
     <AppBar position="static" sx={{ bgcolor: "#333333", p: 1 }}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
           <Link to="/">
             <Box
               component="img"
               src={logo}
               alt="NFTrade Logo"
-              sx={{ height: 80, width: 80 }}
+              sx={{ height: 50, width: 50 }}
             />
           </Link>
           <TextField

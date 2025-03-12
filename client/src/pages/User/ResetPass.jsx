@@ -47,7 +47,7 @@ const ResetPassword = () => {
     }
 
     try {
-      const res = await fetch(`https://nftrade-marketplace.vercel.app/user/reset-password/${token}`, {
+      const res = await fetch(`http://localhost:5000/user/reset-password/${token}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ newPassword }),

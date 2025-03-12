@@ -37,7 +37,7 @@ const CreateNFT = () => {
       await uploadBytes(imageRef, image);
       const imgUrl = await getDownloadURL(imageRef);
 
-      const res = await fetch("https://nftrade-marketplace.vercel.app/nft/create", {
+      const res = await fetch("http://localhost:5000/nft/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

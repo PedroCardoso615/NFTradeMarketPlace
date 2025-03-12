@@ -20,7 +20,7 @@ const DailyReward = () => {
 
   const fetchUserData = async () => {
     try {
-      const res = await fetch("https://nftrade-marketplace.vercel.app/user/me", {
+      const res = await fetch("http://localhost:5000/user/me", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -56,7 +56,7 @@ const DailyReward = () => {
   const claimReward = async () => {
     setLoading(true);
     try {
-      const res = await fetch("https://nftrade-marketplace.vercel.app/user/daily-reward", {
+      const res = await fetch("http://localhost:5000/user/daily-reward", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
