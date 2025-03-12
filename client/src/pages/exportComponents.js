@@ -17,7 +17,6 @@ import TransactionHistory from "./User/TransactionHistory";
 
 export {
   Navbar,
-  Home,
   Login,
   Signup,
   Profile,
@@ -31,5 +30,6 @@ export {
   Favorites,
   NFTCreation,
   DailyRewards,
-  TransactionHistory
+  TransactionHistory,
+  Home,
 };
