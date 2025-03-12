@@ -41,6 +41,7 @@ userRouter.post("/login", async (req, res, next) => {
 
     const { user, accessToken } = await login({ email, password });
 
+    res.setHeader("Access-Control-Allow-Origin", "https://nftrade-marketplace.vercel.app");
     res.setHeader("Access-Control-Allow-Credentials", "true");
 
     res
