@@ -21,7 +21,7 @@ const TransactionHistory = () => {
     const fetchTransactions = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/nft/transaction-history",
+          "https://nftrade-marketplace.vercel.app/nft/transaction-history",
           {
             method: "GET",
             headers: {

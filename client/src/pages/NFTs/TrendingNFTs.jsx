@@ -31,7 +31,7 @@ const TrendingNFTs = () => {
   useEffect(() => {
     const fetchTrendingNFTs = async () => {
       try {
-        const res = await fetch("http://localhost:5000/trending-nfts");
+        const res = await fetch("https://nftrade-marketplace.vercel.app/trending-nfts");
         if (!res.ok) {
           throw new Error("Failed to fetch trending NFTs");
         }
@@ -50,7 +50,7 @@ const TrendingNFTs = () => {
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
-        const res = await fetch("http://localhost:5000/user/favorites", {
+        const res = await fetch("https://nftrade-marketplace.vercel.app/user/favorites", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -76,7 +76,7 @@ const TrendingNFTs = () => {
     try {
       let res;
       if (likedNfts.includes(nftId)) {
-        res = await fetch(`http://localhost:5000/nft/favorite/${nftId}`, {
+        res = await fetch(`https://nftrade-marketplace.vercel.app/nft/favorite/${nftId}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
@@ -84,7 +84,7 @@ const TrendingNFTs = () => {
           credentials: "include",
         });
       } else {
-        res = await fetch(`http://localhost:5000/nft/favorite/${nftId}`, {
+        res = await fetch(`https://nftrade-marketplace.vercel.app/nft/favorite/${nftId}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -125,7 +125,7 @@ const TrendingNFTs = () => {
   const handleBuy = async () => {
     try {
       const res = await fetch(
-        `http://localhost:5000/nft/buy/${selectedNft._id}`,
+        `https://nftrade-marketplace.vercel.app/nft/buy/${selectedNft._id}`,
         {
           method: "POST",
           headers: {

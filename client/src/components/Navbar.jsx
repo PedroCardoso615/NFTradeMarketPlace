@@ -38,7 +38,7 @@ const Navbar = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch("http://localhost:5000/user/me", {
+        const response = await fetch("https://nftrade-marketplace.vercel.app/user/me", {
           credentials: "include",
         });
         const data = await response.json();
@@ -56,7 +56,7 @@ const Navbar = () => {
     if (currentUser) {
       const fetchNotifications = async () => {
         try {
-          const response = await fetch("http://localhost:5000/notification", {
+          const response = await fetch("https://nftrade-marketplace.vercel.app/notification", {
             credentials: "include",
           });
           const data = await response.json();
@@ -73,7 +73,7 @@ const Navbar = () => {
 
   const handleNotificationsRead = async () => {
     try {
-      await fetch("http://localhost:5000/notification/read", {
+      await fetch("https://nftrade-marketplace.vercel.app/notification/read", {
         method: "PUT",
         credentials: "include",
       });
@@ -89,7 +89,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:5000/user/logout", {
+      await fetch("https://nftrade-marketplace.vercel.app/user/logout", {
         method: "POST",
         credentials: "include",
       });

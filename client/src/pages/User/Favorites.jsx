@@ -29,7 +29,7 @@ const Favorites = () => {
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
-        const res = await fetch("http://localhost:5000/user/favorites", {
+        const res = await fetch("https://nftrade-marketplace.vercel.app/user/favorites", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -56,7 +56,7 @@ const Favorites = () => {
   const handleLike = async (nftId) => {
     try {
       let res;
-      res = await fetch(`http://localhost:5000/nft/favorite/${nftId}`, {
+      res = await fetch(`https://nftrade-marketplace.vercel.app/nft/favorite/${nftId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -91,7 +91,7 @@ const Favorites = () => {
   const handleBuy = async () => {
     try {
       const res = await fetch(
-        `http://localhost:5000/nft/buy/${selectedNft._id}`,
+        `https://nftrade-marketplace.vercel.app/nft/buy/${selectedNft._id}`,
         {
           method: "POST",
           headers: {

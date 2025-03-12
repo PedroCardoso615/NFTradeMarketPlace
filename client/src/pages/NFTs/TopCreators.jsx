@@ -11,7 +11,7 @@ const TopCreators = () => {
     setLoading(true);
     try {
       const res = await fetch(
-        `http://localhost:5000/top-creators/${timeFrame}`
+        `https://nftrade-marketplace.vercel.app/top-creators/${timeFrame}`
       );
       const data = await res.json();
 

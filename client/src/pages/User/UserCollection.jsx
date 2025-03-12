@@ -31,7 +31,7 @@ const UserCollection = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const res = await fetch("http://localhost:5000/user/me", {
+        const res = await fetch("https://nftrade-marketplace.vercel.app/user/me", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -57,7 +57,7 @@ const UserCollection = () => {
   useEffect(() => {
     const fetchUserNFTs = async () => {
       try {
-        const res = await fetch("http://localhost:5000/nft/my-nfts", {
+        const res = await fetch("https://nftrade-marketplace.vercel.app/nft/my-nfts", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -108,7 +108,7 @@ const UserCollection = () => {
   const handleUpdate = async () => {
     try {
       const res = await fetch(
-        `http://localhost:5000/nft/update/${selectedNft._id}`,
+        `https://nftrade-marketplace.vercel.app/nft/update/${selectedNft._id}`,
         {
           method: "PUT",
           headers: {
@@ -148,7 +148,7 @@ const UserCollection = () => {
 
   const handleResell = async (nftId) => {
     try {
-      const res = await fetch(`http://localhost:5000/nft/list/${nftId}`, {
+      const res = await fetch(`https://nftrade-marketplace.vercel.app/nft/list/${nftId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -176,7 +176,7 @@ const UserCollection = () => {
 
   const handleRemoveSale = async (nftId) => {
     try {
-      const res = await fetch(`http://localhost:5000/nft/unlist/${nftId}`, {
+      const res = await fetch(`https://nftrade-marketplace.vercel.app/nft/unlist/${nftId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
