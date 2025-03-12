@@ -117,13 +117,13 @@ const Navbar = () => {
   return (
     <AppBar position="static" sx={{ bgcolor: "#333333", p: 1 }}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
           <Link to="/">
             <Box
               component="img"
               src={logo}
               alt="NFTrade Logo"
-              sx={{ height: 50, width: 50 }}
+              sx={{ height: 80, width: 80 }}
             />
           </Link>
           <TextField

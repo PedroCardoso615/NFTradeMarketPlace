@@ -1,4 +1,5 @@
 import Navbar from "../components/Navbar";
+import Home from "./Home";
 import Login from "./User/Login";
 import Signup from "./User/Signup";
 import Profile from "./User/Profile";
@@ -16,6 +17,7 @@ import TransactionHistory from "./User/TransactionHistory";
 
 export {
   Navbar,
+  Home,
   Login,
   Signup,
   Profile,

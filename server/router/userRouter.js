@@ -290,7 +290,7 @@ userRouter.post("/contact", authenticateUser, async (req, res) => {
 
     await sendEmail(
       process.env.GMAIL_USER,
-      `New NFTrade Contact Request: ${subject}`,
+      `NFTrade Contact Request: ${subject}`,
       emailContent
     );
 
