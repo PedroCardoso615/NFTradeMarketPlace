@@ -13,7 +13,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("nf-trade-market-place.vercel.app/user/login", {
+      const response = await fetch("https://nf-trade-market-place.vercel.app/user/login", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

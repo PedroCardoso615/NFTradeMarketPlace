@@ -34,7 +34,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch("nf-trade-market-place.vercel.app/user/me", {
+        const response = await fetch("https://nf-trade-market-place.vercel.app/user/me", {
           method: "GET",
           credentials: "include",
           headers: {
