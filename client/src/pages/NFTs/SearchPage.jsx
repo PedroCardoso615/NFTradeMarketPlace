@@ -23,7 +23,6 @@ import {
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-
 import NFToken from "../../images/NFToken.png";
 import { debounce } from "lodash";
 import { toast } from "react-toastify";
@@ -78,6 +77,28 @@ const SearchResults = () => {
     fetchnfts();
   }, [searchQuery, filters]);
 
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/user/favorites", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+        const data = await res.json();
+        if (data.success) {
+          setLikedNfts(data.favorites.map((fav) => fav._id));
+        }
+      } catch (error) {
+        console.error("Error fetching liked NFTs:", error);
+      }
+    };
+  
+    fetchFavorites();
+  }, []);
+
   const debouncedHandleFilterChange = debounce((e) => {
     setFilters((prev) => ({
       ...prev,
@@ -109,9 +130,9 @@ const SearchResults = () => {
           credentials: "include",
         });
       }
-
+  
       const data = await res.json();
-
+  
       if (data.success) {
         if (likedNfts.includes(nftId)) {
           setLikedNfts((prev) => prev.filter((id) => id !== nftId));
