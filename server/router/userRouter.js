@@ -41,13 +41,16 @@ userRouter.post("/login", async (req, res, next) => {
 
     const { user, accessToken } = await login({ email, password });
 
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+
     res
       .cookie("accessToken", accessToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "Strict",
+        sameSite: "None",
         maxAge: 30 * 60 * 1000,
       })
+      .status(200)
       .json({
         success: true,
         user,
