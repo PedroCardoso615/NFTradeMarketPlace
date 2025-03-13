@@ -43,6 +43,7 @@ const startUpServer = async () => {
 
   checkDailyRewards();
 
+  // To switch between vercel and local
   if (process.env.NODE_ENV !== "vercel") {
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
@@ -57,6 +58,7 @@ const shutDownServer = async () => {
 
 process.on("SIGINT", shutDownServer);
 
+// To switch between vercel and local
 if (process.env.NODE_ENV !== "vercel") {
   startUpServer().catch((error) => {
     console.error("Error starting up server:", error);
