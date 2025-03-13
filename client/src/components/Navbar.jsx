@@ -39,6 +39,7 @@ const Navbar = () => {
     const fetchUser = async () => {
       try {
         const response = await fetch("https://nf-trade-marketplace.vercel.app/user/me", {
+          method: "GET",
           credentials: "include",
         });
         const data = await response.json();
