@@ -60,6 +60,8 @@ const shutDownServer = async () => {
 
 process.on("SIGINT", shutDownServer);
 
+module.exports = app;
+
 startUpServer().catch((error) => {
   console.error("Error starting up server:", error);
   shutDownServer();
