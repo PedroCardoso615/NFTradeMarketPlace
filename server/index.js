@@ -21,11 +21,11 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 };
 
+// Configure API routes and middleware
 const configureApi = () => {
   app.use(cors(corsOptions));
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
-
   app.use(cookieParser());
 
   app.use("/user", userRouter);
@@ -43,9 +43,11 @@ const startUpServer = async () => {
 
   checkDailyRewards();
 
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
+  if (process.env.NODE_ENV !== "vercel") {
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  }
 };
 
 const shutDownServer = async () => {
@@ -55,7 +57,11 @@ const shutDownServer = async () => {
 
 process.on("SIGINT", shutDownServer);
 
-startUpServer().catch((error) => {
-  console.error("Error starting up server:", error);
-  shutDownServer();
-});
+if (process.env.NODE_ENV !== "vercel") {
+  startUpServer().catch((error) => {
+    console.error("Error starting up server:", error);
+    shutDownServer();
+  });
+}
+
+module.exports = app;
