@@ -15,7 +15,7 @@ const checkDailyRewards = require("./utils/dailyRewardCheck");
 const app = express();
 
 const corsOptions = {
-  origin: "https://nf-trade-market-place.vercel.app",
+  origin: "http://localhost:3000",
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -42,12 +42,7 @@ const startUpServer = async () => {
   await createConnectionWithDb();
 
   checkDailyRewards();
-
-  app.get("/", (req, res) => {
-    res.send("Hello, World!");
-  });
   
-
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
@@ -59,8 +54,6 @@ const shutDownServer = async () => {
 };
 
 process.on("SIGINT", shutDownServer);
-
-module.exports = app;
 
 startUpServer().catch((error) => {
   console.error("Error starting up server:", error);

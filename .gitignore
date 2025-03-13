@@ -1,5 +1,6 @@
 # Ignore node_modules in the client and server folders
 /client/node_modules/
+/server/node_modules/
 
 # Ignore .pnp and .pnp.js files if you're using Yarn PnP
 /.pnp
