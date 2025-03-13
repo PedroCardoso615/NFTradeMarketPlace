@@ -15,7 +15,7 @@ const checkDailyRewards = require("./utils/dailyRewardCheck");
 const app = express();
 
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "https://nf-trade-market-place-tk6n.vercel.app",
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
