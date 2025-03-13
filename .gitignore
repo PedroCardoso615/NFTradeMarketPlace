@@ -1,4 +1,27 @@
-node_modules/
-client/node_modules/
-client/.cache/
+# Ignore node_modules in the client and server folders
+/client/node_modules/
+
+# Ignore .pnp and .pnp.js files if you're using Yarn PnP
+/.pnp
+.pnp.js
+
+# Ignore testing coverage reports
+/coverage
+
+# Ignore production build directories
+/build
+
+# Ignore macOS system files
+.DS_Store
+
+# Ignore all environment files
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignore npm debug logs and yarn logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
