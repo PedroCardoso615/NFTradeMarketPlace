@@ -26,6 +26,8 @@ import NFToken from "../../images/NFToken.png";
 import { debounce } from "lodash";
 import { toast } from "react-toastify";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+
 const Catalog = () => {
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -52,7 +54,7 @@ const Catalog = () => {
       });
 
       try {
-        const res = await fetch(`http://localhost:5000/nft?${params}`);
+        const res = await fetch(`${API_BASE_URL}/nft?${params}`);
         const data = await res.json();
         if (data.success) {
           setNfts(Array.isArray(data.data) ? data.data : []);
@@ -70,7 +72,7 @@ const Catalog = () => {
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
-        const res = await fetch("http://localhost:5000/user/favorites", {
+        const res = await fetch(`${API_BASE_URL}/user/favorites`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -104,7 +106,7 @@ const Catalog = () => {
     try {
       let res;
       if (likedNfts.includes(nftId)) {
-        res = await fetch(`http://localhost:5000/nft/favorite/${nftId}`, {
+        res = await fetch(`${API_BASE_URL}/nft/favorite/${nftId}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
@@ -112,7 +114,7 @@ const Catalog = () => {
           credentials: "include",
         });
       } else {
-        res = await fetch(`http://localhost:5000/nft/favorite/${nftId}`, {
+        res = await fetch(`${API_BASE_URL}/nft/favorite/${nftId}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -153,7 +155,7 @@ const Catalog = () => {
   const handleBuy = async () => {
     try {
       const res = await fetch(
-        `http://localhost:5000/nft/buy/${selectedNft._id}`,
+        `${API_BASE_URL}/nft/buy/${selectedNft._id}`,
         {
           method: "POST",
           headers: {

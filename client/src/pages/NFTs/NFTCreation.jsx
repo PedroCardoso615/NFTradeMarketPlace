@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 import { Box, TextField, Button, Typography, Input, IconButton } from "@mui/material";
 import { CloudUpload } from "@mui/icons-material";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+
 const CreateNFT = () => {
   const [NFTName, setNFTName] = useState("");
   const [description, setDescription] = useState("");
@@ -37,7 +39,7 @@ const CreateNFT = () => {
       await uploadBytes(imageRef, image);
       const imgUrl = await getDownloadURL(imageRef);
 
-      const res = await fetch("http://localhost:5000/nft/create", {
+      const res = await fetch(`${API_BASE_URL}/nft/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

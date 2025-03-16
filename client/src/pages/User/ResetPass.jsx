@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { TextField, Button, CircularProgress, Container, Paper, Typography, Box } from "@mui/material";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+
 const ResetPassword = () => {
   const { token } = useParams();
   const navigate = useNavigate();
@@ -47,7 +49,7 @@ const ResetPassword = () => {
     }
 
     try {
-      const res = await fetch(`http://localhost:5000/user/reset-password/${token}`, {
+      const res = await fetch(`${API_BASE_URL}/user/reset-password/${token}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ newPassword }),

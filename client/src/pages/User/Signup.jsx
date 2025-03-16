@@ -6,6 +6,8 @@ import { toast } from "react-toastify";
 import { Container, TextField, Button, Typography, Box } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+
 const Signup = () => {
   const [fullname, setFullname] = useState("");
   const [age, setAge] = useState("");
@@ -37,7 +39,7 @@ const Signup = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/user/check-email?email=${email}`
+        `${API_BASE_URL}/user/check-email?email=${email}`
       );
       const data = await response.json();
 
@@ -67,7 +69,7 @@ const Signup = () => {
       await uploadBytes(imageRef, profilePicture);
       const imgUrl = await getDownloadURL(imageRef);
 
-      const res = await fetch("http://localhost:5000/user/signup", {
+      const res = await fetch(`${API_BASE_URL}/user/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

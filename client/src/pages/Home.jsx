@@ -10,6 +10,8 @@ import {
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+
 const Home = () => {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
@@ -36,7 +38,7 @@ const Home = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5000/user/me", {
+      const response = await fetch(`${API_BASE_URL}/user/me`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -49,7 +51,7 @@ const Home = () => {
       if (data.success && data.user) {
         setLoading(true);
 
-        const res = await fetch("http://localhost:5000/user/contact", {
+        const res = await fetch(`${API_BASE_URL}/user/contact`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
