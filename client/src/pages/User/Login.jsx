@@ -28,7 +28,6 @@ const Login = () => {
         toast.success("Login Successful!", { position: "top-right" });
         setTimeout(() => {
           navigate("/profile");
-          window.location.reload();
         }, 1500);
       } else {
         toast.error("Email or password is incorrect", {
