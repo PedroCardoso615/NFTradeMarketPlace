@@ -14,8 +14,6 @@ const checkDailyRewards = require("./utils/dailyRewardCheck");
 
 const app = express();
 
-const allowedOrigins = process.env.ORIGINS.split(",");
-
 const corsOptions = {
   origin: "http://localhost:3000",
   credentials: true,
