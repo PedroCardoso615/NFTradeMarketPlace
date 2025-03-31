@@ -21,12 +21,6 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 };
 
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Origin', 'https://nftrade-marketplace.vercel.app');
-  next();
-});
-
 const configureApi = () => {
   app.use(cors(corsOptions));
   app.use(express.json());
