@@ -15,14 +15,17 @@ const checkDailyRewards = require("./utils/dailyRewardCheck");
 const app = express();
 
 const corsOptions = {
-  origin:
-    process.env.NODE_ENV === "production"
-      ? "https://nftrade-marketplace.vercel.app"
-      : "http://localhost:3000",
+  origin: ["http://localhost:3000", "https://nftrade-marketplace.vercel.app"],
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 };
+
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Origin', 'https://nftrade-marketplace.vercel.app');
+  next();
+});
 
 const configureApi = () => {
   app.use(cors(corsOptions));
