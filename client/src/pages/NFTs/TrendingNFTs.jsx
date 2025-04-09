@@ -20,8 +20,6 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import NFToken from "../../images/NFToken.png";
 import { toast } from "react-toastify";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
-
 const TrendingNFTs = () => {
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -33,7 +31,7 @@ const TrendingNFTs = () => {
   useEffect(() => {
     const fetchTrendingNFTs = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/trending-nfts`);
+        const res = await fetch(`https://nf-trade-marketplace.vercel.app/trending-nfts`);
         if (!res.ok) {
           throw new Error("Failed to fetch trending NFTs");
         }
@@ -52,7 +50,7 @@ const TrendingNFTs = () => {
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/user/favorites`, {
+        const res = await fetch(`https://nf-trade-marketplace.vercel.app/user/favorites`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -78,7 +76,7 @@ const TrendingNFTs = () => {
     try {
       let res;
       if (likedNfts.includes(nftId)) {
-        res = await fetch(`${API_BASE_URL}/nft/favorite/${nftId}`, {
+        res = await fetch(`https://nf-trade-marketplace.vercel.app/nft/favorite/${nftId}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
@@ -86,7 +84,7 @@ const TrendingNFTs = () => {
           credentials: "include",
         });
       } else {
-        res = await fetch(`${API_BASE_URL}/nft/favorite/${nftId}`, {
+        res = await fetch(`https://nf-trade-marketplace.vercel.app/nft/favorite/${nftId}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -127,7 +125,7 @@ const TrendingNFTs = () => {
   const handleBuy = async () => {
     try {
       const res = await fetch(
-        `${API_BASE_URL}/nft/buy/${selectedNft._id}`,
+        `https://nf-trade-marketplace.vercel.app/nft/buy/${selectedNft._id}`,
         {
           method: "POST",
           headers: {

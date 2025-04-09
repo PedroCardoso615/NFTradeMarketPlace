@@ -12,8 +12,6 @@ import {
 } from "@mui/material";
 import NFToken from "../../images/NFToken.png";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
-
 const TransactionHistory = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,7 +21,7 @@ const TransactionHistory = () => {
     const fetchTransactions = async () => {
       try {
         const response = await fetch(
-          `${API_BASE_URL}/nft/transaction-history`,
+          `https://nf-trade-marketplace.vercel.app/nft/transaction-history`,
           {
             method: "GET",
             headers: {

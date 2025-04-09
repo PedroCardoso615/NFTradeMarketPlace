@@ -13,8 +13,6 @@ import {
 import NFToken from "../../images/NFToken.png";
 import { toast } from "react-toastify";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
-
 const UserCollection = () => {
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -33,7 +31,7 @@ const UserCollection = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/user/me`, {
+        const res = await fetch(`https://nf-trade-marketplace.vercel.app/user/me`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -59,7 +57,7 @@ const UserCollection = () => {
   useEffect(() => {
     const fetchUserNFTs = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/nft/my-nfts`, {
+        const res = await fetch(`https://nf-trade-marketplace.vercel.app/nft/my-nfts`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -110,7 +108,7 @@ const UserCollection = () => {
   const handleUpdate = async () => {
     try {
       const res = await fetch(
-        `${API_BASE_URL}/nft/update/${selectedNft._id}`,
+        `https://nf-trade-marketplace.vercel.app/nft/update/${selectedNft._id}`,
         {
           method: "PUT",
           headers: {
@@ -150,7 +148,7 @@ const UserCollection = () => {
 
   const handleResell = async (nftId) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/nft/list/${nftId}`, {
+      const res = await fetch(`https://nf-trade-marketplace.vercel.app/nft/list/${nftId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -178,7 +176,7 @@ const UserCollection = () => {
 
   const handleRemoveSale = async (nftId) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/nft/unlist/${nftId}`, {
+      const res = await fetch(`https://nf-trade-marketplace.vercel.app/nft/unlist/${nftId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

@@ -17,8 +17,6 @@ import {
 } from "@mui/material";
 import NFToken from "../../images/NFToken.png";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
-
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [totalSales, setTotalSales] = useState(0);
@@ -36,7 +34,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/user/me`, {
+        const response = await fetch("https://nf-trade-marketplace.vercel.app/user/me", {
           method: "GET",
           credentials: "include",
           headers: {
@@ -65,7 +63,7 @@ const Profile = () => {
 
     const fetchEarnings = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/nft/earnings`, {
+        const response = await fetch("https://nf-trade-marketplace.vercel.app/nft/earnings", {
           method: "GET",
           credentials: "include",
           headers: {
@@ -117,7 +115,7 @@ const Profile = () => {
         imgUrl = await getDownloadURL(imageRef);
       }
 
-      const response = await fetch(`${API_BASE_URL}/user/update`, {
+      const response = await fetch("https://nf-trade-marketplace.vercel.app/user/update", {
         method: "PUT",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

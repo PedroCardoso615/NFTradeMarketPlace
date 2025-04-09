@@ -9,8 +9,6 @@ import {
 import { toast } from "react-toastify";
 import NFToken from "../../images/NFToken.png";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
-
 const DailyReward = () => {
   const [balance, setBalance] = useState(0);
   const [remainingTime, setRemainingTime] = useState(null);
@@ -22,7 +20,7 @@ const DailyReward = () => {
 
   const fetchUserData = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/user/me`, {
+      const res = await fetch("https://nf-trade-marketplace.vercel.app/user/me", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -58,7 +56,7 @@ const DailyReward = () => {
   const claimReward = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/user/daily-reward`, {
+      const res = await fetch("https://nf-trade-marketplace.vercel.app/user/daily-reward", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -4,8 +4,6 @@ import { toast } from "react-toastify";
 import { Container, TextField, Button, Typography, Box } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
-
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,7 +13,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API_BASE_URL}/user/login`, {
+      const response = await fetch("https://nf-trade-marketplace.vercel.app/user/login", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -26,7 +24,10 @@ const Login = () => {
 
       if (data.success) {
         toast.success("Login Successful!", { position: "top-right" });
+        setTimeout(() => {
           navigate("/profile");
+          window.location.reload();
+        }, 1500);
       } else {
         toast.error("Email or password is incorrect", {
           position: "top-right",
