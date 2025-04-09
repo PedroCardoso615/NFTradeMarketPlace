@@ -37,7 +37,7 @@ const Signup = () => {
 
     try {
       const response = await fetch(
-        `https://nf-trade-marketplace.vercel.app/user/check-email?email=${email}`
+        `https://nf-trade-market-place.vercel.app/user/check-email?email=${email}`
       );
       const data = await response.json();
 
@@ -67,7 +67,7 @@ const Signup = () => {
       await uploadBytes(imageRef, profilePicture);
       const imgUrl = await getDownloadURL(imageRef);
 
-      const res = await fetch(`https://nf-trade-marketplace.vercel.app/user/signup`, {
+      const res = await fetch(`https://nf-trade-market-place.vercel.app/user/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -21,7 +21,7 @@ const TransactionHistory = () => {
     const fetchTransactions = async () => {
       try {
         const response = await fetch(
-          `https://nf-trade-marketplace.vercel.app/nft/transaction-history`,
+          `https://nf-trade-market-place.vercel.app/nft/transaction-history`,
           {
             method: "GET",
             headers: {

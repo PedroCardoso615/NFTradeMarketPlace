@@ -61,7 +61,7 @@ const SearchResults = () => {
 
       try {
         const response = await fetch(
-          `https://nf-trade-marketplace.vercel.app/nft?${searchParams.toString()}`
+          `https://nf-trade-market-place.vercel.app/nft?${searchParams.toString()}`
         );
         const data = await response.json();
         if (data.success) {
@@ -80,7 +80,7 @@ const SearchResults = () => {
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
-        const res = await fetch(`https://nf-trade-marketplace.vercel.app/user/favorites`, {
+        const res = await fetch(`https://nf-trade-market-place.vercel.app/user/favorites`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -114,7 +114,7 @@ const SearchResults = () => {
     try {
       let res;
       if (likedNfts.includes(nftId)) {
-        res = await fetch(`https://nf-trade-marketplace.vercel.app/nft/favorite/${nftId}`, {
+        res = await fetch(`https://nf-trade-market-place.vercel.app/nft/favorite/${nftId}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
@@ -122,7 +122,7 @@ const SearchResults = () => {
           credentials: "include",
         });
       } else {
-        res = await fetch(`https://nf-trade-marketplace.vercel.app/nft/favorite/${nftId}`, {
+        res = await fetch(`https://nf-trade-market-place.vercel.app/nft/favorite/${nftId}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -163,7 +163,7 @@ const SearchResults = () => {
   const handleBuy = async () => {
     try {
       const res = await fetch(
-        `https://nf-trade-marketplace.vercel.app/nft/buy/${selectedNft._id}`,
+        `https://nf-trade-market-place.vercel.app/nft/buy/${selectedNft._id}`,
         {
           method: "POST",
           headers: {

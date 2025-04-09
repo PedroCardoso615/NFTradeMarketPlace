@@ -10,7 +10,7 @@ import {
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://nf-trade-marketplace.vercel.app";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://nf-trade-market-place.vercel.app";
 
 const Home = () => {
   const [subject, setSubject] = useState("");
@@ -38,7 +38,7 @@ const Home = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`https://nf-trade-marketplace.vercel.app/user/me`, {
+      const response = await fetch(`https://nf-trade-market-place.vercel.app/user/me`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -51,7 +51,7 @@ const Home = () => {
       if (data.success && data.user) {
         setLoading(true);
 
-        const res = await fetch(`https://nf-trade-marketplace.vercel.app/user/contact`, {
+        const res = await fetch(`https://nf-trade-market-place.vercel.app/user/contact`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

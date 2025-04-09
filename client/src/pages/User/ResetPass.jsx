@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { TextField, Button, CircularProgress, Container, Paper, Typography, Box } from "@mui/material";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://nf-trade-marketplace.vercel.app";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://nf-trade-market-place.vercel.app";
 
 const ResetPassword = () => {
   const { token } = useParams();
@@ -49,7 +49,7 @@ const ResetPassword = () => {
     }
 
     try {
-      const res = await fetch(`https://nf-trade-marketplace.vercel.app/user/reset-password/${token}`, {
+      const res = await fetch(`https://nf-trade-market-place.vercel.app/user/reset-password/${token}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ newPassword }),
