@@ -45,7 +45,7 @@ userRouter.post("/login", async (req, res, next) => {
       .cookie("accessToken", accessToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "Strict",
+        sameSite: "None",
         maxAge: 30 * 60 * 1000,
       })
       .json({
@@ -68,7 +68,7 @@ userRouter.post("/logout", (req, res, next) => {
   res.clearCookie("accessToken", {
     httpOnly: true,
     secure: true,
-    sameSite: "Strict",
+    sameSite: "None",
   });
   res.json({
     success: true,
