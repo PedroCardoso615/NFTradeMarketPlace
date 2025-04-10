@@ -20,7 +20,8 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import NFToken from "../../images/NFToken.png";
 import { toast } from "react-toastify";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
 
 const TrendingNFTs = () => {
   const [nfts, setNfts] = useState([]);
@@ -71,7 +72,6 @@ const TrendingNFTs = () => {
     fetchFavorites();
   }, []);
 
-  if (loading) return <CircularProgress sx={{ mt: 3 }} />;
   if (error) return <Typography color="error">Error: {error}</Typography>;
 
   const handleLike = async (nftId) => {
@@ -126,16 +126,13 @@ const TrendingNFTs = () => {
 
   const handleBuy = async () => {
     try {
-      const res = await fetch(
-        `${API_BASE_URL}/nft/buy/${selectedNft._id}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
+      const res = await fetch(`${API_BASE_URL}/nft/buy/${selectedNft._id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
 
       const data = await res.json();
 
@@ -165,8 +162,19 @@ const TrendingNFTs = () => {
     <Box sx={{ p: 3 }}>
       <Typography variant="h4">Trending NFTs</Typography>
 
-      {nfts.length === 0 ? (
-        <Typography sx={{ mt: 3 }}>No NFTs found.</Typography>
+      {loading ? (
+        <Box
+          sx={{
+            height: "50vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      ) : nfts.length === 0 ? (
+        <Typography sx={{ mt: 3 }}>No NFTs found...</Typography>
       ) : (
         <Box
           sx={{
@@ -224,7 +232,7 @@ const TrendingNFTs = () => {
                 height="300"
                 image={nft.image}
                 alt={nft.NFTName}
-                sx={{borderRadius: "12px"}}
+                sx={{ borderRadius: "12px" }}
               />
               <CardContent>
                 <Typography variant="h6" sx={{ fontWeight: "bold" }}>
@@ -312,7 +320,7 @@ const TrendingNFTs = () => {
                 <img
                   src={NFToken}
                   alt="NFToken"
-                  style={{ width: 30, height: 30}}
+                  style={{ width: 30, height: 30 }}
                 />
               </Typography>
             </Box>

@@ -14,10 +14,12 @@ import {
   Typography,
   Paper,
   Divider,
+  CircularProgress,
 } from "@mui/material";
 import NFToken from "../../images/NFToken.png";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -146,139 +148,177 @@ const Profile = () => {
   };
 
   if (error) return <Typography variant="h4">{error}</Typography>;
-  if (!user) return <Typography variant="h4">Loading...</Typography>;
 
   return (
     <Box textAlign="center" mt={4}>
-      <Typography variant="h4" sx={{ mb: 3 }}>
-        Welcome, {user.fullname}!
-      </Typography>
-
-      <Paper sx={{ padding: 3, maxWidth: 600, margin: "auto" }}>
-        <Avatar
-          src={user.profilePicture}
-          alt="Profile"
-          sx={{ width: 150, height: 150, margin: "auto", mb: 2 }}
-        />
-        <Typography variant="h6">
-          <strong>Full Name:</strong> {user.fullname}
-        </Typography>
-        <Typography variant="h6">
-          <strong>Email:</strong> {user.email}
-        </Typography>
-
-        <Typography
-          variant="h6"
-          sx={{ display: "flex", justifyContent: "center", mt: 2 }}
+      {!user ? (
+        <Box
+          sx={{
+            height: "60vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
-          <strong>Balance:</strong>
-          <span style={{ marginLeft: 8 }}>{user.balance}</span>
-          <img src={NFToken} alt="NFTokens" style={{ width: 35, height: 35 }} />
-        </Typography>
-
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setIsPopupOpen(true)}
-          sx={{ mt: 3 }}
-        >
-          Update Profile
-        </Button>
-      </Paper>
-
-      <Divider sx={{ my: 4 }} />
-
-      <Box sx={{ maxWidth: 600, margin: "auto", padding: 2 }}>
-        <Typography variant="h5" sx={{ mb: 2 }}>
-          Earnings Overview
-        </Typography>
-
-        <Paper sx={{ padding: 2 }}>
-          <Typography
-            variant="h6"
-            sx={{ display: "flex", alignItems: "center",  mt: 2 }}
-          >
-            <strong>Earnings from Sales:</strong>
-            <span style={{marginLeft: 15}}>{totalSales.toFixed(2)}</span>
-            <img src={NFToken} alt="NFTokens" style={{ width: 35, height: 35 }} />
+          <CircularProgress />
+        </Box>
+      ) : (
+        <>
+          <Typography variant="h4" sx={{ mb: 2 }}>
+            Welcome, {user.fullname}!
           </Typography>
-          <Typography
-            variant="h6"
-            sx={{ display: "flex", alignItems: "center",  mt: 2 }}
-          >
-            <strong>Earnings from Royalties:</strong>
-            <span style={{marginLeft: 15}}>{totalRoyalties.toFixed(2)}</span>
-            <img src={NFToken} alt="NFTokens" style={{ width: 35, height: 35 }} />
-          </Typography>
-          <Typography
-            variant="h6"
-            sx={{ display: "flex", alignItems: "center",  mt: 2 }}
-          >
-            <strong>Total Earnings:</strong>
-            <span style={{marginLeft: 15}}>{totalEarnings.toFixed(2)}</span>
-            <img src={NFToken} alt="NFTokens" style={{ width: 35, height: 35 }} />
-          </Typography>
-        </Paper>
-      </Box>
 
-      <Dialog open={isPopupOpen} onClose={() => setIsPopupOpen(false)}>
-        <DialogTitle>Edit Profile</DialogTitle>
-        <DialogContent>
-          <TextField
-            fullWidth
-            margin="dense"
-            label="Full Name"
-            name="fullname"
-            value={formData.fullname}
-            onChange={handleInputChange}
-          />
-          <Button
-            variant="contained"
-            component="label"
-            fullWidth
-            sx={{ mt: 2 }}
-          >
-            Upload Profile Picture
-            <input
-              type="file"
-              hidden
-              name="profilePicture"
-              accept="image/*"
-              onChange={handleInputChange}
+          <Paper sx={{ padding: 2, maxWidth: 600, margin: "auto" }}>
+            <Avatar
+              src={user.profilePicture}
+              alt="Profile"
+              sx={{ width: 150, height: 150, margin: "auto", mb: 2 }}
             />
-          </Button>
-          <TextField
-            fullWidth
-            margin="dense"
-            type="password"
-            label="Old Password"
-            name="oldPassword"
-            value={formData.oldPassword}
-            onChange={handleInputChange}
-          />
-          <TextField
-            fullWidth
-            margin="dense"
-            type="password"
-            label="New Password"
-            name="newPassword"
-            value={formData.newPassword}
-            onChange={handleInputChange}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleSubmit} variant="contained" color="primary">
-            Save Changes
-          </Button>
-          <Button
-            onClick={() => setIsPopupOpen(false)}
-            variant="outlined"
-            color="error"
-          >
-            Cancel
-          </Button>
-        </DialogActions>
-      </Dialog>
+            <Typography variant="h6">
+              <strong>Full Name:</strong> {user.fullname}
+            </Typography>
+            <Typography variant="h6">
+              <strong>Email:</strong> {user.email}
+            </Typography>
+
+            <Typography
+              variant="h6"
+              sx={{ display: "flex", justifyContent: "center", mt: 2 }}
+            >
+              <strong>Balance:</strong>
+              <span style={{ marginLeft: 8 }}>{user.balance}</span>
+              <img
+                src={NFToken}
+                alt="NFTokens"
+                style={{ width: 35, height: 35 }}
+              />
+            </Typography>
+
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setIsPopupOpen(true)}
+              sx={{ mt: 3 }}
+            >
+              Update Profile
+            </Button>
+          </Paper>
+
+          <Divider sx={{ my: 4 }} />
+
+          <Box sx={{ maxWidth: 600, margin: "auto", padding: 2 }}>
+            <Typography variant="h5" sx={{ mb: 2 }}>
+              Earnings Overview
+            </Typography>
+
+            <Paper sx={{ padding: 2 }}>
+              <Typography
+                variant="h6"
+                sx={{ display: "flex", alignItems: "center", mt: 2 }}
+              >
+                <strong>Earnings from Sales:</strong>
+                <span style={{ marginLeft: 15 }}>{totalSales.toFixed(2)}</span>
+                <img
+                  src={NFToken}
+                  alt="NFTokens"
+                  style={{ width: 35, height: 35 }}
+                />
+              </Typography>
+              <Typography
+                variant="h6"
+                sx={{ display: "flex", alignItems: "center", mt: 2 }}
+              >
+                <strong>Earnings from Royalties:</strong>
+                <span style={{ marginLeft: 15 }}>
+                  {totalRoyalties.toFixed(2)}
+                </span>
+                <img
+                  src={NFToken}
+                  alt="NFTokens"
+                  style={{ width: 35, height: 35 }}
+                />
+              </Typography>
+              <Typography
+                variant="h6"
+                sx={{ display: "flex", alignItems: "center", mt: 2 }}
+              >
+                <strong>Total Earnings:</strong>
+                <span style={{ marginLeft: 15 }}>
+                  {totalEarnings.toFixed(2)}
+                </span>
+                <img
+                  src={NFToken}
+                  alt="NFTokens"
+                  style={{ width: 35, height: 35 }}
+                />
+              </Typography>
+            </Paper>
+          </Box>
+
+          <Dialog open={isPopupOpen} onClose={() => setIsPopupOpen(false)}>
+            <DialogTitle>Edit Profile</DialogTitle>
+            <DialogContent>
+              <TextField
+                fullWidth
+                margin="dense"
+                label="Full Name"
+                name="fullname"
+                value={formData.fullname}
+                onChange={handleInputChange}
+              />
+              <Button
+                variant="contained"
+                component="label"
+                fullWidth
+                sx={{ mt: 2 }}
+              >
+                Upload Profile Picture
+                <input
+                  type="file"
+                  hidden
+                  name="profilePicture"
+                  accept="image/*"
+                  onChange={handleInputChange}
+                />
+              </Button>
+              <TextField
+                fullWidth
+                margin="dense"
+                type="password"
+                label="Old Password"
+                name="oldPassword"
+                value={formData.oldPassword}
+                onChange={handleInputChange}
+              />
+              <TextField
+                fullWidth
+                margin="dense"
+                type="password"
+                label="New Password"
+                name="newPassword"
+                value={formData.newPassword}
+                onChange={handleInputChange}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={handleSubmit}
+                variant="contained"
+                color="primary"
+              >
+                Save Changes
+              </Button>
+              <Button
+                onClick={() => setIsPopupOpen(false)}
+                variant="outlined"
+                color="error"
+              >
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </>
+      )}
     </Box>
   );
 };

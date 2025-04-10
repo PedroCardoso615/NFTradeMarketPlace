@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import SearchIcon from "@mui/icons-material/Search"; // Import the search icon
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "../images/LogoNoBG.png";
 import NFToken from "../images/NFToken.png";
@@ -35,6 +36,8 @@ const Navbar = () => {
   const [userLoading, setUserLoading] = useState(true);
   const [notificationLoading, setNotificationLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchVisible, setSearchVisible] = useState(false);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -105,7 +108,19 @@ const Navbar = () => {
     }
   };
 
-  if (userLoading) return <CircularProgress />;
+  if (userLoading)
+    return (
+      <Box
+        sx={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -114,12 +129,11 @@ const Navbar = () => {
     }
   };
 
-  if (location.pathname === "/login" || location.pathname === "/signup") {
+  if (location.pathname === "/login" || location.pathname === "/signup")
     return null;
-  }
 
   return (
-    <AppBar position="static" sx={{ bgcolor: "transparent", p: 2, zIndex: 10 }}>
+    <AppBar position="static" sx={{ bgcolor: "transparent", p: 3, zIndex: 10 }}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
           <Link to="/">
@@ -130,51 +144,52 @@ const Navbar = () => {
               sx={{ height: 90, width: 90 }}
             />
           </Link>
-          <TextField
-            variant="outlined"
-            size="small"
-            placeholder="Search NFTs..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleSearch(e);
-            }}
-            sx={{
-              bgcolor: "transparent", 
-              borderRadius: 5,
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "5px",
-                "& fieldset": {
-                  borderColor: "transparent",
+          {searchVisible && (
+            <TextField
+              variant="outlined"
+              size="small"
+              placeholder="Search NFTs..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSearch(e);
+              }}
+              autoComplete="off"
+              sx={{
+                zIndex: 10,
+                transition: "width 0.3s ease",
+                width: searchVisible ? "120px" : "0",
+                opacity: searchVisible ? 1 : 0,
+                bgcolor: "transparent",
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "transparent",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "transparent",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "transparent",
+                  },
                 },
-                "&:hover fieldset": {
-                  borderColor: "transparent",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "transparent",
-                },
-              },
-              "& .MuiInputBase-input": {
-                color: "white",
-              },
-              "& .MuiInputBase-input::placeholder": {
-                color: "white",
-              },
-            }}
-            slotProps={{
-              style: {
-                color: "white",
-              },
-              inputProps: {
-                style: {
+                "& .MuiInputBase-input": {
                   color: "white",
                 },
-              },
-            }}
-          />
+                "& .MuiInputBase-input::placeholder": {
+                  color: "white",
+                },
+              }}
+            />
+          )}
+          <IconButton
+            color="inherit"
+            onClick={() => setSearchVisible((prev) => !prev)}
+          >
+            <SearchIcon />
+          </IconButton>
         </Box>
 
-        <Box sx={{ display: "flex", gap: 3, color: "#fff" }}>
+        <Box sx={{ display: "flex", gap: 3, color: "#fff", width: "83%" }}>
           <Button color="inherit" component={Link} to="/">
             Home
           </Button>

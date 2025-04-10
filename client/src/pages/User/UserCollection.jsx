@@ -13,7 +13,8 @@ import {
 import NFToken from "../../images/NFToken.png";
 import { toast } from "react-toastify";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
 
 const UserCollection = () => {
   const [nfts, setNfts] = useState([]);
@@ -109,17 +110,14 @@ const UserCollection = () => {
 
   const handleUpdate = async () => {
     try {
-      const res = await fetch(
-        `${API_BASE_URL}/nft/update/${selectedNft._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedData),
-          credentials: "include",
-        }
-      );
+      const res = await fetch(`${API_BASE_URL}/nft/update/${selectedNft._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedData),
+        credentials: "include",
+      });
 
       const data = await res.json();
 
@@ -204,12 +202,29 @@ const UserCollection = () => {
     }
   };
 
-  if (loading) return <CircularProgress sx={{ mt: 3 }} />;
-  if (error) return <Typography variant="h6" color="textSecondary">{error}</Typography>;
+  if (error)
+    return (
+      <Typography variant="h6" color="textSecondary">
+        {error}
+      </Typography>
+    );
 
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4">NFT Collection</Typography>
+
+      {loading ? (
+        <Box
+          sx={{
+            height: "60vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <CircularProgress size={50} />
+        </Box>
+      ) : null}
 
       <Box
         sx={{

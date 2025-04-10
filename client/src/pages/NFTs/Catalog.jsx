@@ -26,7 +26,8 @@ import NFToken from "../../images/NFToken.png";
 import { debounce } from "lodash";
 import { toast } from "react-toastify";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
 
 const Catalog = () => {
   const [nfts, setNfts] = useState([]);
@@ -154,16 +155,13 @@ const Catalog = () => {
 
   const handleBuy = async () => {
     try {
-      const res = await fetch(
-        `${API_BASE_URL}/nft/buy/${selectedNft._id}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
+      const res = await fetch(`${API_BASE_URL}/nft/buy/${selectedNft._id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
 
       const data = await res.json();
 
@@ -257,7 +255,16 @@ const Catalog = () => {
       </Box>
 
       {loading ? (
-        <CircularProgress sx={{ mt: 3 }} />
+        <Box
+          sx={{
+            height: "60vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <CircularProgress />
+        </Box>
       ) : nfts.length > 0 ? (
         <Box
           sx={{

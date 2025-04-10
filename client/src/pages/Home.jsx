@@ -21,7 +21,7 @@ const Home = () => {
     <div className={styles.heroSection}>
       <div className={styles.splineContainer}>
         <spline-viewer
-          loading-anim-type="spinner-small-dark"
+          loading-anim-type="spinner-big-light"
           url="https://prod.spline.design/mWxcJ5K-bt7BvFCB/scene.splinecode"
         ></spline-viewer>
       </div>

@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Button, CircularProgress, Typography, Box, Card } from "@mui/material";
 import { toast } from "react-toastify";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
 
 const TopCreators = () => {
   const [timeFrame, setTimeFrame] = useState("24h");
@@ -12,9 +13,7 @@ const TopCreators = () => {
   const fetchTopCreators = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(
-        `${API_BASE_URL}/top-creators/${timeFrame}`
-      );
+      const res = await fetch(`${API_BASE_URL}/top-creators/${timeFrame}`);
       const data = await res.json();
 
       if (res.ok) {
@@ -53,7 +52,7 @@ const TopCreators = () => {
 
   return (
     <Box
-      sx={{ padding: "20px", backgroundColor: "#f9f9f9", minHeight: "100vh" }}
+      sx={{ padding: "20px", minHeight: "100vh" }}
     >
       <Typography variant="h4" gutterBottom>
         Top Creators
@@ -77,7 +76,18 @@ const TopCreators = () => {
         ))}
       </Box>
 
-      {loading && <CircularProgress />}
+      {loading && (
+        <Box
+          sx={{
+            height: "50vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      )}
 
       {!loading && topCreators.length > 0 && (
         <Box
@@ -137,8 +147,8 @@ const TopCreators = () => {
       )}
 
       {!loading && topCreators.length === 0 && (
-        <Typography variant="h6" color="textSecondary">
-          No creators found for the selected time frame.
+        <Typography variant="h6">
+          No creators found for the selected time frame...
         </Typography>
       )}
     </Box>
