@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Button, CircularProgress, Typography, Box, Card } from "@mui/material";
 import { toast } from "react-toastify";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+
 const TopCreators = () => {
   const [timeFrame, setTimeFrame] = useState("24h");
   const [topCreators, setTopCreators] = useState([]);
@@ -11,7 +13,7 @@ const TopCreators = () => {
     setLoading(true);
     try {
       const res = await fetch(
-        `https://nf-trade-market-place.vercel.app/top-creators/${timeFrame}`
+        `${API_BASE_URL}/top-creators/${timeFrame}`
       );
       const data = await res.json();
 

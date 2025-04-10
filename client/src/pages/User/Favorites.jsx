@@ -20,6 +20,8 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import NFToken from "../../images/NFToken.png";
 import { toast } from "react-toastify";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+
 const Favorites = () => {
   const [likedNfts, setLikedNfts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +31,7 @@ const Favorites = () => {
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
-        const res = await fetch("https://nf-trade-market-place.vercel.app/user/favorites", {
+        const res = await fetch(`${API_BASE_URL}/user/favorites`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -56,7 +58,7 @@ const Favorites = () => {
   const handleLike = async (nftId) => {
     try {
       let res;
-      res = await fetch(`https://nf-trade-market-place.vercel.app/nft/favorite/${nftId}`, {
+      res = await fetch(`${API_BASE_URL}/nft/favorite/${nftId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -91,7 +93,7 @@ const Favorites = () => {
   const handleBuy = async () => {
     try {
       const res = await fetch(
-        `https://nf-trade-market-place.vercel.app/nft/buy/${selectedNft._id}`,
+        `${API_BASE_URL}/nft/buy/${selectedNft._id}`,
         {
           method: "POST",
           headers: {

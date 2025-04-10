@@ -20,7 +20,8 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "../images/LogoNoBG.png";
 import NFToken from "../images/NFToken.png";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://nf-trade-market-place.vercel.app";
+const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
 
 const Navbar = () => {
   const [menuAnchor, setMenuAnchor] = useState({
@@ -40,7 +41,7 @@ const Navbar = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`https://nf-trade-market-place.vercel.app/user/me`, {
+        const response = await fetch(`${API_BASE_URL}/user/me`, {
           method: "GET",
           credentials: "include",
         });
@@ -59,7 +60,7 @@ const Navbar = () => {
     if (currentUser) {
       const fetchNotifications = async () => {
         try {
-          const response = await fetch(`https://nf-trade-market-place.vercel.app/notification`, {
+          const response = await fetch(`${API_BASE_URL}/notification`, {
             credentials: "include",
           });
           const data = await response.json();
@@ -76,7 +77,7 @@ const Navbar = () => {
 
   const handleNotificationsRead = async () => {
     try {
-      await fetch(`https://nf-trade-market-place.vercel.app/notification/read`, {
+      await fetch(`${API_BASE_URL}/notification/read`, {
         method: "PUT",
         credentials: "include",
       });
@@ -92,7 +93,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch(`https://nf-trade-market-place.vercel.app/user/logout`, {
+      await fetch(`${API_BASE_URL}/user/logout`, {
         method: "POST",
         credentials: "include",
       });
@@ -118,7 +119,7 @@ const Navbar = () => {
   }
 
   return (
-    <AppBar position="static" sx={{ bgcolor: "#333333", p: 1 }}>
+    <AppBar position="static" sx={{ bgcolor: "transparent", p: 2, zIndex: 10 }}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
           <Link to="/">
@@ -126,7 +127,7 @@ const Navbar = () => {
               component="img"
               src={logo}
               alt="NFTrade Logo"
-              sx={{ height: 50, width: 50 }}
+              sx={{ height: 90, width: 90 }}
             />
           </Link>
           <TextField
@@ -138,7 +139,38 @@ const Navbar = () => {
             onKeyDown={(e) => {
               if (e.key === "Enter") handleSearch(e);
             }}
-            sx={{ bgcolor: "#fff", borderRadius: 1 }}
+            sx={{
+              bgcolor: "transparent", 
+              borderRadius: 5,
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "5px",
+                "& fieldset": {
+                  borderColor: "transparent",
+                },
+                "&:hover fieldset": {
+                  borderColor: "transparent",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "transparent",
+                },
+              },
+              "& .MuiInputBase-input": {
+                color: "white",
+              },
+              "& .MuiInputBase-input::placeholder": {
+                color: "white",
+              },
+            }}
+            slotProps={{
+              style: {
+                color: "white",
+              },
+              inputProps: {
+                style: {
+                  color: "white",
+                },
+              },
+            }}
           />
         </Box>
 
@@ -295,6 +327,7 @@ const Navbar = () => {
                     />
                   </Box>
                 </MenuItem>
+                <Divider />
                 <MenuItem component={Link} to="/profile">
                   Profile
                 </MenuItem>
@@ -309,6 +342,10 @@ const Navbar = () => {
                 </MenuItem>
                 <MenuItem component={Link} to="/transactions">
                   Transaction History
+                </MenuItem>
+                <Divider />
+                <MenuItem component={Link} to="/contact">
+                  Contact Us
                 </MenuItem>
                 <Divider />
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
