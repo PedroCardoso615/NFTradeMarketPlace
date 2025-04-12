@@ -22,7 +22,7 @@ const Home = () => {
       <div className={styles.splineContainer}>
         <spline-viewer
           loading-anim-type="spinner-big-light"
-          url="https://prod.spline.design/mWxcJ5K-bt7BvFCB/scene.splinecode"
+          url="https://prod.spline.design/uco2-mGp2GGoV3Ba/scene.splinecode"
         ></spline-viewer>
       </div>
     </div>
