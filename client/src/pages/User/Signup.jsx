@@ -3,10 +3,12 @@ import { useNavigate, Link } from "react-router-dom";
 import { storage } from "../../config/firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { toast } from "react-toastify";
-import { Container, TextField, Button, Typography, Box } from "@mui/material";
+import styles from "../../styles/Signup.module.css";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
 
 const Signup = () => {
   const [fullname, setFullname] = useState("");
@@ -105,104 +107,76 @@ const Signup = () => {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          mt: 5,
-          p: 4,
-          boxShadow: 3,
-          borderRadius: 2,
-          bgcolor: "background.paper",
-        }}
-      >
-        <Typography variant="h4" gutterBottom>
-          Sign Up
-        </Typography>
+    <div className={styles.container}>
+      <div className={styles.box}>
+        <h2 className={styles.title}>Sign Up</h2>
 
-        {error && <Typography color="error">{error}</Typography>}
+        {error && <p className={styles.error}>{error}</p>}
 
-        <TextField
-          label="Full Name"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={fullname}
-          onChange={(e) => setFullname(e.target.value)}
-          required
-        />
-        <TextField
-          label="Age"
-          type="number"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={age}
-          onChange={(e) => setAge(e.target.value)}
-          required
-        />
-        <TextField
-          label="Email"
-          type="email"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <TextField
-          label="Password"
-          type="password"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-
-        <Button variant="contained" component="label" sx={{ mt: 2, mb: 2 }}>
-          Upload Profile Picture
+        <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
           <input
-            type="file"
-            accept="image/*"
-            ref={fileInputClear}
-            hidden
-            onChange={(e) => setProfilePicture(e.target.files[0])}
+            type="text"
+            placeholder="Full Name"
+            className={styles.input}
+            value={fullname}
+            onChange={(e) => setFullname(e.target.value)}
+            required
           />
-        </Button>
+          <input
+            type="number"
+            placeholder="Age"
+            className={styles.input}
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+            required
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            className={styles.input}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className={styles.input}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
 
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          onClick={handleSignUp}
-          sx={{ mt: 2 }}
-        >
-          Sign Up
-        </Button>
-        <Typography variant="body2" sx={{ mt: 2 }}>
-          <Link
-            to="/login"
-            style={{
-              color: "#1976d2",
-              textDecoration: "none",
-              display: "flex",
-              alignItems: "center",
-              transition: "color 0.3s",
-            }}
-            onMouseEnter={(e) => (e.target.style.color = "#1565c0")}
-            onMouseLeave={(e) => (e.target.style.color = "#1976d2")}
+          <label htmlFor="file-upload" className={styles.uploadButton}>
+            <CloudUploadIcon className={styles.cloudIcon} />
+            <span>Upload Profile Picture</span>
+            <input
+              id="file-upload"
+              type="file"
+              accept="image/*"
+              hidden
+              ref={fileInputClear}
+              onChange={(e) => setProfilePicture(e.target.files[0])}
+            />
+          </label>
+
+          <button
+            type="button"
+            className={styles.submitButton}
+            onClick={handleSignUp}
           >
+            Sign Up
+          </button>
+        </form>
+
+        <p className={styles.linkText}>
+          <Link to="/login" className={styles.linkWithIcon}>
             Already have an account
-            <ArrowForwardIcon sx={{ ml: 1 }} />
+            <ArrowForwardIcon className={styles.icon} />
           </Link>
-        </Typography>
-      </Box>
-    </Container>
+        </p>
+      </div>
+    </div>
   );
 };
 

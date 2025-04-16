@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Container, TextField, Button, Typography, Box } from "@mui/material";
+import styles from "../../styles/Login.module.css";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
@@ -42,88 +42,51 @@ const Login = () => {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          mt: 5,
-          p: 4,
-          boxShadow: 3,
-          borderRadius: 2,
-          bgcolor: "background.paper",
-        }}
-      >
-        <Typography variant="h4" gutterBottom>
-          Login
-        </Typography>
-        <form onSubmit={handleLogin} style={{ width: "100%" }}>
-          <TextField
-            label="Email"
+    <div className={styles.container}>
+      <div className={styles.box}>
+        <h2 className={styles.title}>Welcome Back to NFTrade</h2>
+        <form onSubmit={handleLogin} className={styles.form}>
+          <input
             type="email"
-            variant="outlined"
-            fullWidth
-            margin="normal"
+            placeholder="Email"
+            className={styles.input}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <TextField
-            label="Password"
+          <input
             type="password"
-            variant="outlined"
-            fullWidth
-            margin="normal"
+            placeholder="Password"
+            className={styles.input}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ mt: 2 }}
-          >
+          <button type="submit" className={styles.button}>
             Login
-          </Button>
+          </button>
         </form>
 
-        <Typography variant="body2" sx={{ mt: 2 }}>
+        <p className={styles.linkText}>
           <Link
             to="/forgot-password"
-            style={{
-              color: "#1976d2",
-              textDecoration: "none",
-              transition: "color 0.3s",
-            }}
-            onMouseEnter={(e) => (e.target.style.color = "#1565c0")}
-            onMouseLeave={(e) => (e.target.style.color = "#1976d2")}
+            className={styles.link}
           >
             Forgot Password?
           </Link>
-        </Typography>
+        </p>
 
-        <Typography variant="body2" sx={{ mt: 2 }}>
+        <p className={styles.linkText}>
           <Link
             to="/signup"
-            style={{
-              color: "#1976d2",
-              textDecoration: "none",
-              display: "flex",
-              alignItems: "center",
-              transition: "color 0.3s",
-            }}
-            onMouseEnter={(e) => (e.target.style.color = "#1565c0")}
-            onMouseLeave={(e) => (e.target.style.color = "#1976d2")}
+            className={styles.linkWithIcon}
           >
             Create an Account
-            <ArrowForwardIcon sx={{ ml: 1 }} />
+            <ArrowForwardIcon className={styles.icon} />
           </Link>
-        </Typography>
-      </Box>
-    </Container>
+        </p>
+      </div>
+    </div>
   );
 };
 

@@ -168,24 +168,24 @@ const Profile = () => {
             Welcome, {user.fullname}!
           </Typography>
 
-          <Paper sx={{ padding: 2, maxWidth: 600, margin: "auto" }}>
+          <Paper sx={{ padding: 2, maxWidth: 600, margin: "auto",  backgroundColor: "#191919", color: "#fff" }}>
             <Avatar
               src={user.profilePicture}
               alt="Profile"
               sx={{ width: 150, height: 150, margin: "auto", mb: 2 }}
             />
             <Typography variant="h6">
-              <strong>Full Name:</strong> {user.fullname}
+              <span>Full Name:</span> {user.fullname}
             </Typography>
             <Typography variant="h6">
-              <strong>Email:</strong> {user.email}
+              <span>Email:</span> {user.email}
             </Typography>
 
             <Typography
               variant="h6"
               sx={{ display: "flex", justifyContent: "center", mt: 2 }}
             >
-              <strong>Balance:</strong>
+              <span>Balance:</span>
               <span style={{ marginLeft: 8 }}>{user.balance}</span>
               <img
                 src={NFToken}
@@ -196,7 +196,7 @@ const Profile = () => {
 
             <Button
               variant="contained"
-              color="primary"
+              color="#fff"
               onClick={() => setIsPopupOpen(true)}
               sx={{ mt: 3 }}
             >
