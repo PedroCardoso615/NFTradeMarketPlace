@@ -198,25 +198,25 @@ const Profile = () => {
               variant="contained"
               color="#fff"
               onClick={() => setIsPopupOpen(true)}
-              sx={{ mt: 3 }}
+              sx={{ mt: 3, backgroundColor:"#000" }}
             >
               Update Profile
             </Button>
           </Paper>
 
-          <Divider sx={{ my: 4 }} />
+          <Divider sx={{ my: 1 }} />
 
           <Box sx={{ maxWidth: 600, margin: "auto", padding: 2 }}>
             <Typography variant="h5" sx={{ mb: 2 }}>
               Earnings Overview
             </Typography>
 
-            <Paper sx={{ padding: 2 }}>
+            <Paper sx={{ padding: 2, color: "#fff", bgcolor: "#191919" }}>
               <Typography
                 variant="h6"
                 sx={{ display: "flex", alignItems: "center", mt: 2 }}
               >
-                <strong>Earnings from Sales:</strong>
+                <span>Earnings from Sales:</span>
                 <span style={{ marginLeft: 15 }}>{totalSales.toFixed(2)}</span>
                 <img
                   src={NFToken}
@@ -228,7 +228,7 @@ const Profile = () => {
                 variant="h6"
                 sx={{ display: "flex", alignItems: "center", mt: 2 }}
               >
-                <strong>Earnings from Royalties:</strong>
+                <span>Earnings from Royalties:</span>
                 <span style={{ marginLeft: 15 }}>
                   {totalRoyalties.toFixed(2)}
                 </span>
@@ -242,7 +242,7 @@ const Profile = () => {
                 variant="h6"
                 sx={{ display: "flex", alignItems: "center", mt: 2 }}
               >
-                <strong>Total Earnings:</strong>
+                <span>Total Earnings:</span>
                 <span style={{ marginLeft: 15 }}>
                   {totalEarnings.toFixed(2)}
                 </span>

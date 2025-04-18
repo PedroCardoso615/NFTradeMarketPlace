@@ -109,7 +109,7 @@ const Signup = () => {
   return (
     <div className={styles.container}>
       <div className={styles.box}>
-        <h2 className={styles.title}>Sign Up</h2>
+        <h2 className={styles.title}>Create Your NFTrade Account</h2>
 
         {error && <p className={styles.error}>{error}</p>}
 
