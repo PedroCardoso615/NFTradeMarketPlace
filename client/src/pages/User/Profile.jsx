@@ -255,7 +255,7 @@ const Profile = () => {
             </Paper>
           </Box>
 
-          <Dialog open={isPopupOpen} onClose={() => setIsPopupOpen(false)}>
+          <Dialog open={isPopupOpen} onClose={() => setIsPopupOpen(false)} sx={{bgcolor:"#191919"}}>
             <DialogTitle>Edit Profile</DialogTitle>
             <DialogContent>
               <TextField

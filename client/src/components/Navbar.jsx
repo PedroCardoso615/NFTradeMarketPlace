@@ -135,7 +135,7 @@ const Navbar = () => {
   return (
     <AppBar position="static" sx={{ bgcolor: "transparent", p: 3, zIndex: 10 }}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Link to="/">
             <Box
               component="img"
@@ -283,6 +283,11 @@ const Navbar = () => {
                       borderRadius: "20px",
                       padding: "4px 16px",
                       textTransform: "none",
+                      bgcolor: "#000",
+                      "&:hover": {
+                        bgcolor: "#191919",
+                        boxShadow: "2px solid #000",
+                      },
                     }}
                   >
                     Mark all as read
