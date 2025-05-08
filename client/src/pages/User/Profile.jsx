@@ -255,7 +255,7 @@ const Profile = () => {
             </Paper>
           </Box>
 
-          <Dialog open={isPopupOpen} onClose={() => setIsPopupOpen(false)} sx={{bgcolor:"#191919"}}>
+          <Dialog open={isPopupOpen} onClose={() => setIsPopupOpen(false)} sx={{ backdropFilter: "blur(5px)" }}>
             <DialogTitle>Edit Profile</DialogTitle>
             <DialogContent>
               <TextField
@@ -270,7 +270,7 @@ const Profile = () => {
                 variant="contained"
                 component="label"
                 fullWidth
-                sx={{ mt: 2 }}
+                sx={{ mt: 2, backgroundColor:"#191919" }}
               >
                 Upload Profile Picture
                 <input
@@ -304,14 +304,14 @@ const Profile = () => {
               <Button
                 onClick={handleSubmit}
                 variant="contained"
-                color="primary"
+                sx={{ backgroundColor:"#191919" }}
               >
                 Save Changes
               </Button>
               <Button
                 onClick={() => setIsPopupOpen(false)}
                 variant="outlined"
-                color="error"
+                color="#fff"
               >
                 Cancel
               </Button>
